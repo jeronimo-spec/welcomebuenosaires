@@ -1,5 +1,7 @@
 # Welcome Buenos Aires — Web App de Gestión
 
+La versión integrada sigue los módulos avanzados de fotógrafo, puntos de venta y usuarios/permisos adjuntos por separado. Ver [reglas y alcance de la integración](docs/integracion.md) y [pruebas](tests/integrated_smoke.py).
+
 Prototipo funcional responsive, sin dependencias externas y listo para abrir en navegador.
 
 ## Cómo usarlo
