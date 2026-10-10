@@ -6,7 +6,7 @@ Prototipo funcional responsive, sin dependencias externas y listo para abrir en 
 
 ## Cómo usarlo
 
-1. Abrir `index.html` directamente, o ejecutar un servidor local:
+1. Servir la carpeta completa por HTTP para que todos los módulos compartan datos, incluido el editor de puntos de venta. Para probar online sin instalar herramientas, seguir la [guía de prueba con GitHub Pages](docs/como-probar.md). Para ejecutar un servidor local:
    - Python: `python3 -m http.server 8080`
    - Luego abrir `http://localhost:8080`
 2. Usuarios demo:
@@ -15,6 +15,8 @@ Prototipo funcional responsive, sin dependencias externas y listo para abrir en 
    - Fotógrafo: `fotografo@welcome.com`
    - Auditor: `auditor@welcome.com`
    - Contraseña para todos: `welcome2026`
+
+Capturas de la prueba integrada: [dashboard](docs/capturas/dashboard.png) y [fotógrafo](docs/capturas/fotografo.png).
 
 ## Funciones incluidas
 
