@@ -1,0 +1,3818 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome Buenos Aires · Módulo Fotógrafo V7</title>
+  <style>
+    :root{
+      --navy:#0f1f2e;
+      --navy-2:#18354b;
+      --teal:#1aa39a;
+      --teal-dark:#11766f;
+      --bg:#f3f7f8;
+      --card:#ffffff;
+      --text:#1a2b3b;
+      --muted:#6d7c89;
+      --line:#dfe7ec;
+      --success:#17885c;
+      --warning:#d78a12;
+      --danger:#c94b4b;
+      --info:#2d6fb7;
+      --shadow:0 16px 40px rgba(16,35,50,.10);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left,rgba(26,163,154,.12),transparent 28%),
+        linear-gradient(180deg,#f8fbfc 0%,var(--bg) 100%);
+    }
+
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .hidden{display:none!important}
+
+    .app-shell{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:minmax(280px,420px) minmax(360px,780px);
+      justify-content:center;
+      gap:34px;
+      padding:28px;
+      align-items:start;
+    }
+
+    .info-panel{
+      position:sticky;
+      top:28px;
+      min-height:calc(100vh - 56px);
+      padding:34px;
+      border-radius:28px;
+      overflow:hidden;
+      color:#fff;
+      background:linear-gradient(145deg,var(--navy),var(--navy-2));
+      box-shadow:var(--shadow);
+    }
+
+    .info-panel:after{
+      content:"";
+      position:absolute;
+      right:-120px;
+      bottom:-130px;
+      width:300px;
+      height:300px;
+      border-radius:50%;
+      background:rgba(26,163,154,.14);
+    }
+
+    .brand,.mini-brand,.top-brand{display:flex;align-items:center;gap:12px}
+    .brand{position:relative;z-index:2}
+    .brand-mark{
+      width:52px;height:52px;
+      display:grid;place-items:center;
+      border-radius:16px;
+      background:var(--teal);
+      color:#fff;
+      font-weight:900;
+      letter-spacing:-1px;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+    }
+    .brand-copy strong,.mini-brand strong,.top-brand strong{display:block}
+    .brand-copy span,.mini-brand span,.top-brand span{font-size:12px;color:#b9cbd5}
+
+    .info-panel h1{
+      position:relative;z-index:2;
+      margin:48px 0 12px;
+      font-size:38px;
+      line-height:1.05;
+      letter-spacing:-1.4px;
+    }
+    .info-panel>p{
+      position:relative;z-index:2;
+      color:#c6d5dd;
+      line-height:1.6;
+    }
+
+    .flow-list{
+      position:relative;z-index:2;
+      display:grid;gap:17px;
+      list-style:none;
+      padding:0;
+      margin:34px 0 0;
+    }
+    .flow-list li{display:grid;grid-template-columns:34px 1fr;gap:12px}
+    .flow-num{
+      width:34px;height:34px;
+      display:grid;place-items:center;
+      border-radius:50%;
+      background:rgba(255,255,255,.1);
+      border:1px solid rgba(255,255,255,.15);
+      font-weight:800;
+    }
+    .flow-list strong{display:block;margin:2px 0 4px;font-size:14px}
+    .flow-list span{display:block;color:#afc1cb;font-size:12px;line-height:1.45}
+
+    .demo-note{
+      position:relative;z-index:2;
+      margin-top:36px;
+      padding:16px;
+      border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      color:#d2dee5;
+      font-size:12px;
+      line-height:1.55;
+    }
+
+    .app-panel{width:100%;max-width:780px;margin:auto}
+    .phone-frame{
+      min-height:780px;
+      overflow:hidden;
+      border:1px solid rgba(216,227,233,.9);
+      border-radius:28px;
+      background:#fff;
+      box-shadow:var(--shadow);
+    }
+    .screen{display:none}
+    .screen.active{display:block}
+
+    .login-screen{
+      min-height:780px;
+      display:grid;
+      align-items:center;
+      padding:50px;
+    }
+    .login-card{width:100%;max-width:430px;margin:auto}
+    .mini-brand{margin-bottom:38px}
+    .mini-brand .brand-mark{width:46px;height:46px;border-radius:14px}
+    .mini-brand span{color:var(--muted)}
+
+    .eyebrow{
+      margin:0 0 8px;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      color:var(--teal-dark);
+      font-size:11px;
+      font-weight:800;
+    }
+    h2{margin:0;font-size:30px;line-height:1.15;letter-spacing:-.8px}
+    .lead{margin:12px 0 28px;color:var(--muted);line-height:1.55}
+
+    .field{margin-bottom:18px}
+    .field label{display:block;margin-bottom:8px;font-size:13px;font-weight:700}
+    .input-wrap{position:relative}
+    .input-wrap input,.field textarea,.field select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:13px;
+      background:#fff;
+      color:var(--text);
+      outline:none;
+      transition:.2s;
+    }
+    .input-wrap input{padding:14px 46px 14px 14px}
+    .field textarea{min-height:90px;padding:12px;resize:vertical}
+    .field select{padding:13px}
+    .input-wrap input:focus,.field textarea:focus,.field select:focus{
+      border-color:var(--teal);
+      box-shadow:0 0 0 4px rgba(26,163,154,.12);
+    }
+    .input-icon{
+      position:absolute;
+      right:14px;top:50%;
+      transform:translateY(-50%);
+      border:none;background:transparent;color:var(--muted);
+    }
+    .row-between{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .remember,.checkline{display:flex;align-items:flex-start;gap:8px;color:var(--muted);font-size:12px}
+    .remember input,.checkline input{accent-color:var(--teal)}
+    .link-btn{padding:0;border:none;background:none;color:var(--teal-dark);font-size:12px;font-weight:700}
+
+    .primary-btn,.secondary-btn,.ghost-btn,.danger-btn{
+      border:none;border-radius:13px;padding:14px 18px;font-weight:800;transition:.2s;
+    }
+    .primary-btn{background:var(--teal);color:#fff;box-shadow:0 10px 20px rgba(26,163,154,.22)}
+    .primary-btn:hover{background:var(--teal-dark);transform:translateY(-1px)}
+    .primary-btn:disabled{background:#b8c7cc;box-shadow:none;cursor:not-allowed;transform:none}
+    .secondary-btn{background:var(--navy);color:#fff}
+    .ghost-btn{background:#eef3f5;color:var(--text)}
+    .danger-btn{background:#fff0f0;color:var(--danger)}
+    .full{width:100%}
+    .login-btn{margin-top:24px}
+    .error-box{
+      margin-top:14px;padding:11px 13px;
+      border:1px solid #f2c4c4;border-radius:12px;
+      background:#fff1f1;color:#a73838;font-size:12px;
+    }
+    .demo-credentials{
+      margin-top:22px;padding:12px 14px;
+      border:1px dashed var(--line);border-radius:13px;
+      color:var(--muted);font-size:12px;line-height:1.55;
+    }
+
+    .topbar{
+      position:sticky;top:0;z-index:20;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:18px 22px;
+      border-bottom:1px solid var(--line);
+      background:#fff;
+    }
+    .top-brand .brand-mark{width:38px;height:38px;border-radius:12px;font-size:13px}
+    .top-brand strong{font-size:13px}
+    .top-brand span{font-size:10px;color:var(--muted)}
+    .top-actions{display:flex;gap:8px}
+    .icon-btn{
+      position:relative;
+      width:38px;height:38px;
+      border:none;border-radius:12px;
+      background:#f1f5f6;color:var(--text);
+    }
+    .notify-dot{
+      position:absolute;right:8px;top:7px;
+      width:7px;height:7px;border-radius:50%;
+      background:var(--danger);border:1px solid #fff;
+    }
+
+    .profile-menu{
+      position:absolute;top:64px;right:22px;z-index:30;
+      width:210px;padding:8px;
+      border:1px solid var(--line);border-radius:14px;
+      background:#fff;box-shadow:var(--shadow);
+    }
+    .profile-menu button{
+      width:100%;padding:11px;border:none;border-radius:10px;
+      background:#fff;text-align:left;font-size:12px;color:var(--text);
+    }
+    .profile-menu button:hover{background:#f4f7f8}
+
+    .tabbar{
+      position:sticky;
+      top:75px;
+      z-index:15;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      padding:8px 22px;
+      border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,.96);
+      backdrop-filter:blur(10px);
+    }
+    .tab-btn{
+      position:relative;
+      padding:11px 10px;
+      border:none;
+      border-bottom:3px solid transparent;
+      background:transparent;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+    }
+    .tab-btn.active{color:var(--teal-dark);border-bottom-color:var(--teal)}
+    .tab-badge{
+      display:inline-grid;place-items:center;
+      min-width:19px;height:19px;
+      margin-left:5px;padding:0 5px;
+      border-radius:999px;
+      background:var(--danger);color:#fff;
+      font-size:9px;
+    }
+
+    .content{padding:24px 22px 120px}
+    .tab-pane{display:none}
+    .tab-pane.active{display:block}
+    .welcome-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
+    .welcome-row h2{font-size:26px}
+    .date-time{text-align:right;color:var(--muted);font-size:12px;line-height:1.55}
+
+    .status-card,.section-card,.gate-card{
+      margin-bottom:16px;
+      border-radius:var(--radius);
+    }
+    .status-card{
+      padding:18px;
+      border:1px solid #cfe9e7;
+      background:linear-gradient(145deg,#f7fbfb,#eef8f7);
+    }
+    .status-line{display:flex;align-items:center;gap:8px;color:var(--warning);font-size:12px;font-weight:800}
+    .status-dot{width:9px;height:9px;border-radius:50%;background:currentColor}
+    .status-card h3{margin:12px 0 7px;font-size:18px}
+    .status-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+
+    .section-card{
+      padding:18px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:16px}
+    .section-head h3{margin:0;font-size:16px}
+    .section-head p{margin:4px 0 0;color:var(--muted);font-size:12px}
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:7px 10px;
+      border-radius:999px;
+      background:#eef6f5;color:var(--teal-dark);
+      font-size:11px;font-weight:800;white-space:nowrap;
+    }
+    .chip.warn{background:#fff6e5;color:#9a6411}
+    .chip.locked{background:#eef1f3;color:#6d7c89}
+    .chip.danger{background:#fff0f0;color:var(--danger)}
+
+    .assignment-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .data-box{
+      padding:12px;border:1px solid #edf1f3;border-radius:13px;background:#f7f9fa;
+    }
+    .data-box span{
+      display:block;margin-bottom:5px;color:var(--muted);
+      font-size:10px;text-transform:uppercase;letter-spacing:.08em;
+    }
+    .data-box strong{font-size:13px}
+
+    .goals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .goal{
+      padding:12px 8px;border:1px solid var(--line);border-radius:13px;
+      background:#f8fafb;text-align:center;
+    }
+    .goal strong{display:block;font-size:21px}
+    .goal span{font-size:10px;color:var(--muted)}
+    .goal.featured{background:#eef9f7;border-color:#c5e9e4}
+    .goal.excellent{background:#fff8e8;border-color:#f3deb0}
+
+    .equipment-summary{display:grid;gap:10px}
+    .equipment-summary-row{
+      display:grid;
+      grid-template-columns:42px 1fr auto;
+      gap:11px;
+      align-items:center;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:13px;
+      background:#fff;
+    }
+    .equipment-icon{
+      width:38px;height:38px;
+      display:grid;place-items:center;
+      border-radius:12px;
+      background:#eff6f6;
+    }
+    .equipment-copy strong{display:block;font-size:13px}
+    .equipment-copy span{display:block;margin-top:3px;color:var(--muted);font-size:10px}
+    .asset-code{
+      padding:6px 8px;
+      border-radius:8px;
+      background:#f3f6f7;
+      color:var(--muted);
+      font-size:9px;font-weight:800;
+      white-space:nowrap;
+    }
+
+    .location-box{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      padding:14px;border:1px solid var(--line);border-radius:14px;background:#f7f9fa;
+    }
+    .location-copy strong{display:block;font-size:13px}
+    .location-copy span{display:block;margin-top:4px;color:var(--muted);font-size:11px}
+    .small-btn{
+      padding:10px 12px;border:none;border-radius:11px;
+      background:var(--navy);color:#fff;font-size:11px;font-weight:800;white-space:nowrap;
+    }
+    .location-result{margin-top:12px;padding:11px 12px;border-radius:12px;font-size:12px}
+    .location-result.ok{background:#eaf8f1;color:var(--success)}
+    .location-result.warn{background:#fff7e8;color:#9a6411}
+    .arrival{margin-top:12px;padding:12px;border-radius:12px;background:#f6f8fa;color:var(--muted);font-size:12px}
+    .arrival strong{color:var(--text)}
+
+    .stock-list{display:grid;gap:10px}
+    .stock-row{
+      display:grid;grid-template-columns:1fr 100px 105px;gap:10px;align-items:center;
+      padding:12px;border:1px solid var(--line);border-radius:13px;background:#fff;
+    }
+    .stock-name{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800}
+    .stock-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:#eff6f6}
+    .stock-expected,.stock-input{text-align:center}
+    .stock-expected span,.stock-input span{
+      display:block;margin-bottom:5px;color:var(--muted);font-size:9px;
+      text-transform:uppercase;letter-spacing:.07em;
+    }
+    .stock-expected strong{font-size:16px}
+    .stock-input input{
+      width:72px;padding:9px;border:1px solid var(--line);
+      border-radius:10px;outline:none;text-align:center;
+    }
+    .stock-input input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(26,163,154,.10)}
+    .stock-alert{
+      margin-top:12px;padding:12px;border-radius:12px;
+      background:#fff7e8;color:#91600f;font-size:12px;line-height:1.45;
+    }
+
+    .instruction{
+      padding:14px;
+      border-left:4px solid var(--teal);
+      border-radius:12px;
+      background:#f3faf9;
+      color:#38505f;
+      font-size:13px;
+      line-height:1.55;
+    }
+    .checkline{margin-top:14px}
+    .checkline input{margin-top:2px}
+
+    .sticky-start{
+      position:fixed;bottom:0;left:calc(50% + 17px);transform:translateX(-50%);
+      z-index:25;
+      width:min(736px,calc(100vw - 56px));
+      padding:14px 22px 18px;
+      background:linear-gradient(180deg,rgba(255,255,255,0),#fff 22%);
+      pointer-events:none;
+    }
+    .sticky-start button{pointer-events:auto}
+    .requirements{
+      margin-bottom:7px;
+      color:var(--muted);
+      font-size:10px;
+      text-align:center;
+    }
+
+    .active-hero{
+      margin-bottom:16px;padding:20px;border-radius:20px;
+      background:linear-gradient(145deg,var(--navy),#19364c);color:#fff;
+    }
+    .active-hero .status-line{color:#5ee1b8}
+    .active-hero h2{margin:12px 0 6px;font-size:28px}
+    .active-hero p{margin:0;color:#c1d2db;font-size:12px}
+    .timer{margin-top:18px;font-size:34px;font-weight:900;letter-spacing:-1px}
+    .progress-wrap{margin-top:18px}
+    .progress-head{display:flex;justify-content:space-between;margin-bottom:8px;color:#d0dde4;font-size:11px}
+    .progress-bar{height:10px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.12)}
+    .progress-fill{width:0%;height:100%;border-radius:999px;background:#5ee1b8}
+
+    .gate-card{
+      padding:18px;
+      border:1px solid #f0d8a4;
+      background:#fff9ec;
+    }
+    .gate-card.ready{border-color:#bfe5cf;background:#effaf4}
+    .gate-card.with-issues{border-color:#efc5c5;background:#fff5f5}
+    .gate-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .gate-title h3{margin:0;font-size:17px}
+    .gate-title p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+
+    .assigned-note{
+      margin-top:14px;padding:11px 12px;
+      border-radius:12px;
+      background:#eef5fb;color:#315d82;
+      font-size:11px;line-height:1.5;
+    }
+
+    .tool-list{display:grid;gap:12px;margin-top:16px}
+    .tool-row{
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+    }
+    .tool-head{
+      display:grid;
+      grid-template-columns:40px 1fr auto;
+      gap:10px;
+      align-items:center;
+    }
+    .tool-copy strong{display:block;font-size:13px}
+    .tool-copy span{display:block;margin-top:3px;color:var(--muted);font-size:10px}
+    .tool-status-label{
+      padding:5px 8px;border-radius:8px;
+      background:#f1f4f5;color:var(--muted);
+      font-size:9px;font-weight:800;
+    }
+    .tool-status-label.ok{background:#eaf8f1;color:var(--success)}
+    .tool-status-label.missing{background:#fff0f0;color:var(--danger)}
+    .tool-status-label.problem{background:#fff7e8;color:#9a6411}
+    .tool-options{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:7px;
+      margin-top:12px;
+    }
+    .tool-options button{
+      padding:9px 6px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:#fff;
+      color:var(--muted);
+      font-size:10px;
+      font-weight:800;
+    }
+    .tool-options button.selected-ok{border-color:#bce4cf;background:#eaf8f1;color:var(--success)}
+    .tool-options button.selected-missing{border-color:#efbcbc;background:#fff0f0;color:var(--danger)}
+    .tool-options button.selected-problem{border-color:#f1d39b;background:#fff7e8;color:#9a6411}
+    .tool-detail{
+      margin-top:11px;padding-top:11px;border-top:1px dashed var(--line);
+    }
+    .tool-detail textarea{
+      width:100%;min-height:70px;padding:11px;
+      border:1px solid var(--line);border-radius:11px;
+      outline:none;resize:vertical;
+    }
+    .tool-alert{
+      margin-top:14px;padding:12px;border-radius:12px;
+      background:#fff0f0;color:#984242;
+      font-size:11px;line-height:1.5;
+    }
+
+    .active-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .active-action{
+      padding:15px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      text-align:left;
+    }
+    .active-action:disabled{background:#f2f4f5;color:#9aa7ae;cursor:not-allowed}
+    .active-action span{display:block;margin-bottom:8px;font-size:20px}
+    .active-action strong{font-size:12px}
+    .active-action small{display:block;margin-top:4px;color:var(--muted);font-size:10px}
+
+
+    .sales-summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .metric-card{
+      padding:14px;border:1px solid var(--line);border-radius:14px;background:#f8fafb;
+    }
+    .metric-card span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+    .metric-card strong{display:block;margin:6px 0 2px;font-size:22px}
+    .metric-card small{color:var(--muted);font-size:9px}
+    .cash-metric{background:#f3faf9;border-color:#cfe9e7}
+    .highlight-metric{background:#eef5fb;border-color:#c9dcec}
+    .discount-metric{background:#fff9ec;border-color:#f0d8a4}
+
+    .opening-cash-hero{
+      display:grid;grid-template-columns:54px 1fr;gap:13px;align-items:center;
+      padding:14px;border:1px solid #cfe9e7;border-radius:15px;background:#f3faf9;
+    }
+    .opening-cash-icon{
+      width:54px;height:54px;display:grid;place-items:center;
+      border-radius:15px;background:#fff;font-size:26px;
+    }
+    .opening-cash-hero strong{display:block;font-size:14px}
+    .opening-cash-hero p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
+
+    .money-input-wrap,.rate-input-wrap{
+      display:grid;grid-template-columns:auto 1fr;align-items:center;
+      overflow:hidden;border:1px solid var(--line);border-radius:12px;background:#fff;
+    }
+    .money-input-wrap span,.rate-input-wrap span{
+      align-self:stretch;display:grid;place-items:center;
+      padding:0 12px;border-right:1px solid var(--line);
+      background:#f4f7f8;color:var(--muted);font-size:11px;font-weight:800;
+    }
+    .money-input-wrap input,.rate-input-wrap input{
+      min-width:0;width:100%;padding:12px;border:none;outline:none;background:#fff;
+    }
+
+    .summary-subtitle{
+      margin:16px 0 8px;color:var(--muted);font-size:10px;
+      font-weight:900;text-transform:uppercase;letter-spacing:.07em;
+    }
+    .dynamic-currency-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .currency-summary-card{
+      padding:11px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:center;
+    }
+    .currency-summary-card span{display:block;margin-bottom:4px;color:var(--muted);font-size:9px;font-weight:800}
+    .currency-summary-card strong{font-size:12px}
+    .currency-summary-card small{display:block;margin-top:4px;color:var(--muted);font-size:8px}
+    .cash-explanation{
+      margin-top:10px;padding:10px 11px;border-radius:11px;
+      background:#f3f6f7;color:var(--muted);font-size:10px;line-height:1.45;
+    }
+
+    .goal-progress-card{
+      margin-top:12px;padding:14px;border:1px solid #cfe9e7;border-radius:14px;background:#f3faf9;
+    }
+    .goal-progress-card.achieved{border-color:#bfe5cf;background:#effaf4}
+    .goal-progress-head{display:flex;justify-content:space-between;gap:14px;align-items:center}
+    .goal-progress-head span{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.06em}
+    .goal-progress-head strong{display:block;margin-top:4px;font-size:12px}
+    .goal-progress-head b{font-size:15px;color:var(--teal-dark);white-space:nowrap}
+    .goal-progress-track{height:9px;margin-top:11px;border-radius:999px;background:#dfeceb;overflow:hidden}
+    .goal-progress-fill{height:100%;width:0;border-radius:999px;background:var(--teal);transition:.3s}
+
+    .payment-breakdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .payment-breakdown-card{
+      padding:12px;border:1px solid var(--line);border-radius:13px;background:#fff;
+    }
+    .payment-breakdown-card>span{display:block;font-size:18px;margin-bottom:6px}
+    .payment-breakdown-card strong{display:block;font-size:12px}
+    .payment-breakdown-card small{display:block;margin-top:3px;color:var(--muted);font-size:8px}
+    .payment-breakdown-detail{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+    .payment-breakdown-detail div{display:flex;justify-content:space-between;gap:8px;margin-top:4px;font-size:8px}
+    .payment-breakdown-detail span{color:var(--muted)}
+
+    .product-card{
+      display:grid;grid-template-columns:68px 1fr;gap:14px;align-items:center;
+      padding:15px;border:1px solid #cfe9e7;border-radius:16px;background:#f3faf9;
+    }
+    .product-visual{
+      width:68px;height:68px;display:grid;place-items:center;
+      border-radius:17px;background:#fff;font-size:31px;
+      box-shadow:0 8px 20px rgba(16,35,50,.08);
+    }
+    .product-copy h3{margin:4px 0;font-size:18px}
+    .product-copy p{margin:0;color:var(--muted);font-size:11px;line-height:1.45}
+    .product-code{color:var(--teal-dark);font-size:9px;font-weight:900;letter-spacing:.08em}
+
+    .form-section{padding:18px 0;border-bottom:1px solid var(--line)}
+    .form-title{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .form-title>span{
+      width:28px;height:28px;display:grid;place-items:center;
+      border-radius:9px;background:var(--navy);color:#fff;font-size:11px;font-weight:900;
+    }
+    .form-title strong{display:block;font-size:13px}
+    .form-title small{display:block;margin-top:2px;color:var(--muted);font-size:10px}
+
+    .quantity-control{
+      width:170px;display:grid;grid-template-columns:48px 1fr 48px;align-items:center;
+      overflow:hidden;border:1px solid var(--line);border-radius:13px;background:#fff;
+    }
+    .quantity-control button{height:44px;border:none;background:#f1f5f6;font-size:21px;color:var(--text)}
+    .quantity-control strong{text-align:center;font-size:18px}
+
+    .price-options{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+    .price-option{
+      padding:12px 8px;border:1px solid var(--line);border-radius:13px;
+      background:#fff;text-align:left;color:var(--text);
+    }
+    .price-option span,.price-option small{display:block;color:var(--muted);font-size:9px}
+    .price-option strong{display:block;margin:7px 0 3px;font-size:15px}
+    .price-option.selected{border-color:var(--teal);background:#eef9f7;box-shadow:0 0 0 3px rgba(26,163,154,.10)}
+
+    .payment-options{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .payment-option{
+      padding:13px 9px;border:1px solid var(--line);border-radius:13px;
+      background:#fff;text-align:left;color:var(--text);
+    }
+    .payment-option b{display:block;margin-bottom:7px;font-size:21px}
+    .payment-option strong{display:block;font-size:12px}
+    .payment-option small{display:block;margin-top:3px;color:var(--muted);font-size:9px;line-height:1.35}
+    .payment-option.selected{border-color:var(--teal);background:#eef9f7;box-shadow:0 0 0 3px rgba(26,163,154,.10)}
+
+    .payment-detail-panel{
+      margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#f8fafb;
+    }
+    .payment-detail-panel>strong{display:block;font-size:12px}
+    .payment-detail-panel>p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.45}
+    .standalone-input{
+      width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:#fff;outline:none;
+    }
+    .standalone-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(26,163,154,.10)}
+    .two-column-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .field-helper{display:block;margin-top:6px;color:var(--muted);font-size:9px;line-height:1.4}
+
+    .price-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}
+    .price-data-box{
+      min-height:74px;padding:12px;border:1px solid var(--line);border-radius:13px;background:#f8fafb;
+    }
+    .price-data-box span{display:block;margin-bottom:7px;color:var(--muted);font-size:10px}
+    .price-data-box strong{font-size:19px}
+    .price-edit-field{margin-bottom:0}
+
+    .minimum-price-box{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      margin-top:11px;padding:11px 12px;border:1px solid #f0d8a4;border-radius:12px;background:#fff9ec;
+    }
+    .minimum-price-box.valid{border-color:#bfe5cf;background:#effaf4}
+    .minimum-price-box.invalid{border-color:#efc5c5;background:#fff5f5}
+    .minimum-price-box span{display:block;color:var(--muted);font-size:9px}
+    .minimum-price-box strong{display:block;margin-top:3px;font-size:12px}
+    .minimum-price-box>span{text-align:right;font-size:10px;font-weight:800}
+
+    .discount-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+    .discount-summary div{
+      padding:10px;border:1px solid var(--line);border-radius:11px;background:#fff;text-align:center;
+    }
+    .discount-summary span{display:block;color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:.05em}
+    .discount-summary strong{display:block;margin-top:5px;font-size:11px}
+
+    .change-box,.cash-after-change{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:11px;border-radius:11px;background:#fff;border:1px solid var(--line);
+    }
+    .change-box span,.cash-after-change span{color:var(--muted);font-size:11px}
+    .change-box strong,.cash-after-change strong{font-size:16px}
+    .cash-after-change{margin-top:8px;background:#f3faf9}
+    .foreign-change-info{
+      margin-bottom:10px;padding:10px;border-radius:10px;background:#eef5fb;color:#315d82;
+      font-size:10px;line-height:1.45;
+    }
+    .inline-warning{margin-top:9px;color:var(--danger);font-size:10px;font-weight:700}
+
+    .checkout-summary{
+      display:grid;gap:10px;margin:18px 0 12px;padding:15px;
+      border-radius:15px;background:var(--navy);color:#fff;
+    }
+    .checkout-summary>div{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .checkout-summary span{color:#bed0db;font-size:10px}
+    .checkout-summary strong{font-size:12px;text-align:right}
+    .checkout-total{padding-top:10px;border-top:1px solid rgba(255,255,255,.15)}
+    .checkout-total strong{font-size:22px}
+    .product-module-note{
+      margin-bottom:14px;padding:11px;border-radius:11px;background:#eef5fb;color:#315d82;
+      font-size:10px;line-height:1.45;
+    }
+
+    .sale-success{
+      margin-bottom:16px;padding:15px;border:1px solid #bfe5cf;border-radius:15px;
+      background:#effaf4;color:#266c4b;font-size:12px;line-height:1.5;
+    }
+    .sale-success strong{display:block;margin-bottom:4px;font-size:14px}
+    .sales-history{display:grid;gap:9px}
+    .sale-history-item{
+      display:grid;grid-template-columns:1fr auto;gap:12px;
+      padding:13px;border:1px solid var(--line);border-radius:13px;background:#fff;
+    }
+    .sale-history-item strong{display:block;font-size:12px}
+    .sale-history-item span{display:block;margin-top:4px;color:var(--muted);font-size:9px;line-height:1.4}
+    .sale-history-total{text-align:right}
+    .sale-history-total strong{font-size:14px;color:var(--teal-dark)}
+    .sale-history-total span{white-space:nowrap}
+
+    .closure-kpis,.closure-total-grid,.liquidation-total-grid{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:9px;
+    }
+    .closure-kpis>div,.liquidation-total-grid>div{
+      padding:12px;border:1px solid var(--line);border-radius:12px;background:#f8fafb;
+    }
+    .closure-kpis span,.liquidation-total-grid span{
+      display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.05em;
+    }
+    .closure-kpis strong,.liquidation-total-grid strong{display:block;margin-top:5px;font-size:15px}
+    .goal-result-box{
+      margin-top:12px;padding:12px;border-radius:12px;background:#f3faf9;color:#315c53;
+      font-size:11px;font-weight:800;line-height:1.45;
+    }
+    .goal-result-box.achieved{background:#eaf8f1;color:var(--success)}
+
+    .commission-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .commission-option{
+      padding:14px;border:1px solid var(--line);border-radius:14px;background:#fff;text-align:left;color:var(--text);
+    }
+    .commission-option b{display:block;margin-bottom:8px;font-size:23px}
+    .commission-option strong{display:block;font-size:12px}
+    .commission-option small{display:block;margin-top:4px;color:var(--muted);font-size:9px;line-height:1.4}
+    .commission-option.selected{border-color:var(--teal);background:#eef9f7;box-shadow:0 0 0 3px rgba(26,163,154,.10)}
+
+    .liquidation-movement-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px;
+    }
+    .liquidation-movement-grid div{
+      padding:11px;border:1px solid var(--line);border-radius:12px;background:#f8fafb;
+    }
+    .liquidation-movement-grid span{display:block;color:var(--muted);font-size:9px}
+    .liquidation-movement-grid strong{display:block;margin-top:5px;font-size:13px}
+    .liquidation-movement-grid .accent{background:#eef5fb;border-color:#c9dcec}
+
+    .cash-waterfall{display:grid;gap:7px}
+    .cash-waterfall-row{
+      display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+      padding:10px 11px;border:1px solid var(--line);border-radius:11px;background:#f8fafb;
+    }
+    .cash-waterfall-row span{font-size:10px;color:var(--muted)}
+    .cash-waterfall-row strong{font-size:12px;text-align:right}
+    .cash-waterfall-row.negative{background:#fff5f5;border-color:#efc5c5}
+    .cash-waterfall-row.positive{background:#effaf4;border-color:#bfe5cf}
+    .cash-waterfall-row.personal{background:#eef5fb;border-color:#c9dcec}
+
+    .cash-settlement-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+    .cash-settlement-card{
+      padding:12px;border:1px solid var(--line);border-radius:13px;background:#fff;
+    }
+    .cash-settlement-card h4{margin:0 0 8px;font-size:12px}
+    .cash-settlement-card div{display:flex;justify-content:space-between;gap:10px;margin-top:5px;font-size:9px}
+    .cash-settlement-card div span{color:var(--muted)}
+    .cash-settlement-card div b{text-align:right}
+    .cash-settlement-card .render-total{margin-top:9px;padding-top:8px;border-top:1px solid var(--line);font-size:11px}
+
+    .final-check-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .final-check-box{padding:13px;border:1px solid var(--line);border-radius:13px;background:#f8fafb}
+    .final-check-box>strong{display:block;margin-bottom:9px;font-size:12px}
+    .final-check-box>label{display:flex;align-items:flex-start;gap:8px;margin-top:8px;font-size:10px;line-height:1.4}
+    .final-check-box input{accent-color:var(--teal)}
+
+    .stock-close-note{
+      margin-bottom:12px;padding:10px;border-radius:11px;background:#eef5fb;color:#315d82;
+      font-size:10px;line-height:1.45;
+    }
+    .closure-stock-table{display:grid;gap:9px}
+    .closure-stock-row{
+      display:grid;grid-template-columns:1.25fr repeat(4,.78fr);gap:8px;align-items:center;
+      padding:11px;border:1px solid var(--line);border-radius:12px;background:#fff;
+    }
+    .closure-stock-row.header{
+      padding:0 5px;border:none;background:transparent;color:var(--muted);
+      font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;
+    }
+    .closure-stock-name{font-size:11px;font-weight:800}
+    .closure-stock-cell{text-align:center;font-size:10px}
+    .closure-stock-cell input{
+      width:65px;padding:8px;border:1px solid var(--line);border-radius:9px;text-align:center;outline:none;
+    }
+    .stock-difference-ok{color:var(--success);font-weight:800}
+    .stock-difference-warn{color:var(--danger);font-weight:800}
+    .closure-requirements{
+      margin:12px 0 8px;color:var(--muted);font-size:10px;text-align:center;
+    }
+
+    .printable-liquidation{
+      padding:24px;border:1px solid var(--line);border-radius:18px;background:#fff;
+    }
+    .liquidation-header{
+      display:grid;grid-template-columns:52px 1fr auto;gap:13px;align-items:center;
+      padding-bottom:16px;border-bottom:2px solid var(--navy);
+    }
+    .liquidation-header .brand-mark{width:52px;height:52px}
+    .liquidation-header span{font-size:9px;font-weight:900;letter-spacing:.1em;color:var(--teal-dark)}
+    .liquidation-header h2{margin:3px 0;font-size:21px}
+    .liquidation-header p{margin:0;color:var(--muted);font-size:9px}
+    .liquidation-status{
+      padding:8px 10px;border-radius:9px;background:#eaf8f1;color:var(--success);font-size:10px;font-weight:900;
+    }
+    .liquidation-info-grid{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:14px;
+    }
+    .liquidation-info-grid div{padding:10px;border-radius:10px;background:#f6f8fa}
+    .liquidation-info-grid span{display:block;color:var(--muted);font-size:8px;text-transform:uppercase}
+    .liquidation-info-grid strong{display:block;margin-top:4px;font-size:10px}
+    .liquidation-section{padding:16px 0;border-bottom:1px solid var(--line)}
+    .liquidation-section h3{margin:0 0 10px;font-size:13px}
+    .print-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .print-breakdown>div{
+      padding:10px;border:1px solid var(--line);border-radius:10px;background:#f8fafb;
+    }
+    .print-breakdown strong{display:block;font-size:10px}
+    .print-breakdown span{display:block;margin-top:4px;color:var(--muted);font-size:8px;line-height:1.4}
+    .print-stock-table{display:grid;gap:6px}
+    .print-stock-row{
+      display:grid;grid-template-columns:1.25fr repeat(4,.75fr);gap:6px;
+      padding:8px;border-bottom:1px solid var(--line);font-size:8px;
+    }
+    .print-stock-row.header{font-weight:900;text-transform:uppercase;color:var(--muted)}
+    .liquidation-observations{
+      min-height:50px;margin:0;padding:11px;border-radius:10px;background:#f8fafb;
+      color:var(--text);font-size:10px;line-height:1.5;
+    }
+    .liquidation-footer{padding-top:14px;color:var(--muted);font-size:8px;text-align:center}
+    .liquidation-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+
+    @media print{
+      body *{visibility:hidden!important}
+      #printableLiquidation,#printableLiquidation *{visibility:visible!important}
+      #printableLiquidation{
+        position:absolute;left:0;top:0;width:100%;
+        border:none;border-radius:0;padding:12mm;box-shadow:none;
+      }
+      @page{size:A4;margin:8mm}
+    }
+    .incident-category-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .incident-option{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      font-size:12px;
+    }
+    .incident-option input{margin-top:2px;accent-color:var(--danger)}
+    .incident-option strong{display:block;margin-bottom:3px}
+    .incident-option span{display:block;color:var(--muted);font-size:10px;line-height:1.4}
+    .incident-history{display:grid;gap:9px}
+    .history-empty{padding:14px;border-radius:11px;background:#f6f8fa;color:var(--muted);font-size:11px}
+    .history-item{
+      padding:12px;
+      border-left:3px solid var(--danger);
+      border-radius:9px;
+      background:#fff4f4;
+      font-size:11px;
+    }
+    .history-item.material{border-left-color:var(--warning);background:#fff9ed}
+    .history-item strong{display:block;margin-bottom:4px}
+    .history-item span{display:block;line-height:1.45}
+    .history-meta{margin-top:5px!important;color:var(--muted);font-size:9px}
+
+    .modal-backdrop{
+      position:fixed;inset:0;z-index:50;
+      display:grid;place-items:center;
+      padding:20px;
+      background:rgba(6,17,26,.65);
+    }
+    .modal{
+      width:min(460px,100%);
+      max-height:90vh;
+      overflow:auto;
+      padding:22px;
+      border-radius:20px;
+      background:#fff;
+      box-shadow:0 30px 70px rgba(0,0,0,.28);
+    }
+    .modal-icon{
+      width:50px;height:50px;
+      display:grid;place-items:center;
+      margin-bottom:16px;
+      border-radius:15px;
+      background:#eaf8f6;
+      font-size:24px;
+    }
+    .modal h3{margin:0 0 8px;font-size:20px}
+    .modal p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+    .confirm-data{
+      display:grid;gap:8px;
+      margin:16px 0;padding:13px;
+      border-radius:13px;
+      background:#f6f8fa;
+      font-size:12px;
+    }
+    .confirm-data div{display:flex;justify-content:space-between;gap:12px}
+    .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+
+    @media(max-width:1000px){
+      .app-shell{grid-template-columns:1fr;max-width:780px;margin:auto;padding:18px}
+      .info-panel{position:relative;top:auto;min-height:auto;padding:24px}
+      .info-panel h1{margin-top:28px;font-size:30px}
+      .flow-list{grid-template-columns:repeat(2,1fr)}
+      .sticky-start{left:50%;width:min(736px,calc(100vw - 36px))}
+    }
+
+    @media(max-width:640px){
+      body{background:#fff}
+      .app-shell{display:block;padding:0}
+      .info-panel{display:none}
+      .phone-frame{min-height:100vh;border:none;border-radius:0;box-shadow:none}
+      .login-screen{min-height:100vh;padding:28px 22px}
+      .content{padding:20px 16px 120px}
+      .topbar{padding:14px 16px}
+      .tabbar{top:67px;padding:7px 16px}
+      .welcome-row{display:block}
+      .date-time{text-align:left;margin-top:8px}
+      .assignment-grid{grid-template-columns:1fr 1fr}
+      .stock-row{grid-template-columns:1fr 75px 82px}
+      .stock-input input{width:60px}
+      .tool-options{grid-template-columns:1fr}
+      .incident-category-grid,.final-check-grid,.cash-settlement-grid{grid-template-columns:1fr}
+      .price-options,.payment-options{grid-template-columns:1fr}
+      .two-column-fields,.price-editor-grid{grid-template-columns:1fr}
+      .dynamic-currency-grid{grid-template-columns:1fr 1fr}
+      .discount-summary{grid-template-columns:1fr}
+      .sales-summary-grid{grid-template-columns:1fr 1fr}
+      .payment-breakdown-grid{grid-template-columns:1fr}
+      .commission-options{grid-template-columns:1fr}
+      .closure-stock-row{grid-template-columns:1.05fr repeat(4,.8fr);gap:4px}
+      .closure-stock-cell input{width:52px}
+      .liquidation-info-grid{grid-template-columns:1fr 1fr}
+      .print-breakdown{grid-template-columns:1fr}
+      .liquidation-header{grid-template-columns:48px 1fr}
+      .liquidation-status{grid-column:2;justify-self:start}
+      .sticky-start{width:100%;padding-left:16px;padding-right:16px}
+      .active-actions{grid-template-columns:1fr 1fr}
+      .sales-summary-grid{grid-template-columns:1fr 1fr}
+      .product-card{grid-template-columns:58px 1fr}
+      .product-visual{width:58px;height:58px}
+      .equipment-summary-row{grid-template-columns:38px 1fr}
+      .asset-code{grid-column:2;justify-self:start}
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <aside class="info-panel">
+      <div class="brand">
+        <div class="brand-mark">WBA</div>
+        <div class="brand-copy">
+          <strong>Welcome Buenos Aires</strong>
+          <span>Sistema Operativo</span>
+        </div>
+      </div>
+
+      <h1>Módulo<br>Fotógrafo</h1>
+      <p>Asignación de equipos por jornada, recepción de stock, confirmación de material inicial, control operativo final y liquidación detallada.</p>
+
+      <ol class="flow-list">
+        <li><div class="flow-num">1</div><div><strong>Asignación programada</strong><span>El encargado define punto, horario y equipos con marca y modelo.</span></div></li>
+        <li><div class="flow-num">2</div><div><strong>Inicio del turno</strong><span>Ubicación y stock inicial recibido.</span></div></li>
+        <li><div class="flow-num">3</div><div><strong>Material inicial</strong><span>Confirmación de los elementos recibidos, sin evaluar todavía su funcionamiento.</span></div></li>
+        <li><div class="flow-num">4</div><div><strong>Incidencias separadas</strong><span>Solapa específica para problemas del punto o materiales.</span></div></li>
+      </ol>
+
+      <div class="demo-note">
+        <strong>Demo funcional</strong><br>
+        Usuario: <b>valentin</b><br>
+        Contraseña: <b>1234</b>
+      </div>
+    </aside>
+
+    <section class="app-panel">
+      <div class="phone-frame">
+
+        <!-- LOGIN -->
+        <section id="loginScreen" class="screen active">
+          <div class="login-screen">
+            <div class="login-card">
+              <div class="mini-brand">
+                <div class="brand-mark">WBA</div>
+                <div><strong>Welcome Buenos Aires</strong><span>Módulo Fotógrafo</span></div>
+              </div>
+
+              <p class="eyebrow">Acceso al sistema</p>
+              <h2>Bienvenido</h2>
+              <p class="lead">Ingresá con tus datos para consultar la jornada y los equipos asignados.</p>
+
+              <form id="loginForm">
+                <div class="field">
+                  <label for="username">Usuario, correo o DNI</label>
+                  <div class="input-wrap">
+                    <input id="username" autocomplete="username" placeholder="Ej.: valentin" />
+                    <span class="input-icon">👤</span>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="password">Contraseña</label>
+                  <div class="input-wrap">
+                    <input id="password" type="password" autocomplete="current-password" placeholder="Ingresá tu contraseña" />
+                    <button id="togglePassword" type="button" class="input-icon" aria-label="Mostrar contraseña">👁</button>
+                  </div>
+                </div>
+
+                <div class="row-between">
+                  <label class="remember"><input id="rememberUser" type="checkbox" /> Recordar mi usuario</label>
+                  <button type="button" class="link-btn" onclick="alert('En producción se enviará un código por correo o WhatsApp.')">Olvidé mi contraseña</button>
+                </div>
+
+                <div id="loginError" class="error-box hidden"></div>
+                <button class="primary-btn full login-btn" type="submit">INGRESAR</button>
+              </form>
+
+              <div class="demo-credentials">
+                Para probar la maqueta usá <strong>valentin</strong> / <strong>1234</strong>.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- INICIO DEL DÍA -->
+        <section id="startScreen" class="screen">
+          <header class="topbar">
+            <div class="top-brand">
+              <div class="brand-mark">WBA</div>
+              <div><strong>Inicio del día</strong><span>Módulo Fotógrafo</span></div>
+            </div>
+            <div class="top-actions">
+              <button class="icon-btn">🔔<span class="notify-dot"></span></button>
+              <button id="profileButton" class="icon-btn">VN</button>
+            </div>
+            <div id="profileMenu" class="profile-menu hidden">
+              <button onclick="alert('Pantalla de perfil pendiente.')">Mi perfil</button>
+              <button id="logoutBtn">Cerrar sesión</button>
+            </div>
+          </header>
+
+          <div class="content">
+            <div class="welcome-row">
+              <div>
+                <p class="eyebrow">Preparación del turno</p>
+                <h2>Buenos días, Valentín</h2>
+              </div>
+              <div class="date-time">
+                <div id="currentDate">—</div>
+                <strong id="currentTime">—</strong>
+              </div>
+            </div>
+
+            <div class="status-card">
+              <div class="status-line"><span class="status-dot"></span>PENDIENTE DE INICIO</div>
+              <h3>Validá tu llegada y el stock recibido</h3>
+              <p>También podés consultar los modelos de los equipos asignados por el encargado para esta jornada.</p>
+            </div>
+
+            <section class="section-card">
+              <div class="section-head">
+                <div>
+                  <h3>Asignación del día</h3>
+                  <p>Configuración cargada por el encargado.</p>
+                </div>
+                <span class="chip">✓ Confirmada</span>
+              </div>
+
+              <div class="assignment-grid">
+                <div class="data-box"><span>Punto asignado</span><strong>Mirador Obelisco</strong></div>
+                <div class="data-box"><span>Turno</span><strong>Mañana</strong></div>
+                <div class="data-box"><span>Horario</span><strong>09:00 a 14:00</strong></div>
+                <div class="data-box"><span>Responsable</span><strong>Jonatan</strong></div>
+                <div class="data-box"><span>Producto</span><strong>Digital + Impresa</strong></div>
+                <div class="data-box"><span>Llegada sugerida</span><strong>08:45</strong></div>
+              </div>
+
+              <div class="goals">
+                <div class="goal"><strong>20</strong><span>Objetivo mínimo</span></div>
+                <div class="goal featured"><strong>25</strong><span>Buen desempeño</span></div>
+                <div class="goal excellent"><strong>30</strong><span>Excelente</span></div>
+              </div>
+            </section>
+
+            <section class="section-card">
+              <div class="section-head">
+                <div>
+                  <h3>Equipos asignados</h3>
+                  <p>Marca, modelo e identificación definidos al programar la jornada.</p>
+                </div>
+                <span class="chip">Asignado por Jonatan</span>
+              </div>
+
+              <div id="equipmentSummary" class="equipment-summary"></div>
+            </section>
+
+            <section class="section-card">
+              <div class="section-head">
+                <div>
+                  <h3>Ubicación de inicio</h3>
+                  <p>Corroboración del punto asignado.</p>
+                </div>
+              </div>
+
+              <div class="location-box">
+                <div class="location-copy">
+                  <strong>📍 Mirador Obelisco</strong>
+                  <span>Av. 9 de Julio y Av. Corrientes</span>
+                </div>
+                <button id="locationBtn" class="small-btn">Validar ubicación</button>
+              </div>
+
+              <div id="locationResult" class="location-result hidden"></div>
+              <div id="arrivalMessage" class="arrival">
+                <strong>Control de llegada:</strong> se calculará al validar la ubicación.
+              </div>
+            </section>
+
+            <section class="section-card">
+              <div class="section-head">
+                <div>
+                  <h3>Stock inicial recibido</h3>
+                  <p>Las cantidades fueron preestablecidas para Mirador Obelisco.</p>
+                </div>
+                <span id="stockStatusChip" class="chip warn">Pendiente</span>
+              </div>
+
+              <div id="stockList" class="stock-list"></div>
+
+              <div id="stockDifferenceBox" class="stock-alert hidden">
+                Hay diferencias con el stock asignado. Podés iniciar el turno, pero el encargado recibirá una notificación.
+              </div>
+
+              <label class="checkline">
+                <input id="stockAck" type="checkbox" />
+                <span>Confirmo que conté el stock recibido y que las cantidades ingresadas son correctas.</span>
+              </label>
+            </section>
+
+            <section class="section-card">
+              <div class="section-head">
+                <div>
+                  <h3>Indicación para hoy</h3>
+                  <p>Mensaje cargado por el encargado.</p>
+                </div>
+              </div>
+
+              <div class="instruction">
+                Priorizar fotografías familiares y ofrecer primero el producto digital + impreso. Recordar informar el precio antes de realizar la impresión.
+              </div>
+
+              <label class="checkline">
+                <input id="instructionAck" type="checkbox" />
+                <span>Leí y comprendí la indicación operativa del día.</span>
+              </label>
+            </section>
+          </div>
+
+          <div class="sticky-start">
+            <div id="requirementsText" class="requirements">Completá los controles obligatorios para continuar.</div>
+            <button id="startShiftBtn" class="primary-btn full" disabled>INICIAR TURNO</button>
+          </div>
+        </section>
+
+        <!-- TURNO ACTIVO -->
+        <section id="activeScreen" class="screen">
+          <header class="topbar">
+            <div class="top-brand">
+              <div class="brand-mark">WBA</div>
+              <div><strong>Jornada activa</strong><span>Mirador Obelisco</span></div>
+            </div>
+            <div class="top-actions">
+              <button class="icon-btn">🔔</button>
+              <button class="icon-btn">VN</button>
+            </div>
+          </header>
+
+          <nav class="tabbar">
+            <button id="homeTabBtn" class="tab-btn active">Inicio</button>
+            <button id="salesTabBtn" class="tab-btn">Ventas <span id="salesBadge" class="tab-badge hidden">0</span></button>
+            <button id="closureTabBtn" class="tab-btn">Cierre</button>
+            <button id="incidentsTabBtn" class="tab-btn">Incidencias <span id="incidentBadge" class="tab-badge hidden">0</span></button>
+          </nav>
+
+          <div class="content">
+
+            <!-- HOME TAB -->
+            <div id="homePane" class="tab-pane active">
+              <div class="welcome-row">
+                <div>
+                  <p class="eyebrow">En operación</p>
+                  <h2>Hola, Valentín</h2>
+                </div>
+                <div class="date-time">
+                  <div id="activeDate">—</div>
+                  <strong id="activeTime">—</strong>
+                </div>
+              </div>
+
+              <div class="active-hero">
+                <div id="activeStatusLine" class="status-line"><span class="status-dot"></span>JORNADA EN CURSO</div>
+                <h2>Mirador Obelisco</h2>
+                <p>Turno mañana · 09:00 a 14:00 hs</p>
+                <div id="elapsedTimer" class="timer">00:00:00</div>
+
+                <div class="progress-wrap">
+                  <div class="progress-head"><span>Productos vendidos</span><strong id="heroSalesCount">0 / 20</strong></div>
+                  <div class="progress-bar"><div id="heroProgressFill" class="progress-fill"></div></div>
+                </div>
+              </div>
+
+              <section id="toolGate" class="gate-card">
+                <div class="gate-title">
+                  <div>
+                    <h3>Confirmación del material recibido</h3>
+                    <p>Indicá con qué elementos comenzás el día. En esta instancia no se evalúa su funcionamiento, porque eso se informa durante la jornada o al cierre.</p>
+                  </div>
+                  <span id="toolStatusChip" class="chip locked">Confirmación pendiente</span>
+                </div>
+
+                <div class="assigned-note">
+                  Los modelos y códigos fueron asignados por el encargado al programar la jornada de Mirador Obelisco.
+                </div>
+
+                <div id="toolList" class="tool-list"></div>
+
+                <div id="toolIssueAlert" class="tool-alert hidden">
+                  Hay elementos asignados que no fueron recibidos. Esto no bloquea las ventas, pero el encargado será notificado.
+                </div>
+
+                <button id="confirmToolsBtn" class="primary-btn full" style="margin-top:14px" disabled>
+                  CONFIRMAR MATERIAL INICIAL Y HABILITAR VENTAS
+                </button>
+              </section>
+
+              <section class="section-card">
+                <div class="section-head">
+                  <div>
+                    <h3>Acciones de jornada</h3>
+                    <p id="salesHelper">Confirmá los elementos recibidos para habilitar el registro de ventas.</p>
+                  </div>
+                </div>
+
+                <div class="active-actions">
+                  <button id="saleBtn" class="active-action" disabled>
+                    <span>💳</span><strong>Registrar venta</strong><small>Digital, impresa y medio de pago</small>
+                  </button>
+                  <button class="active-action" onclick="alert('Módulo de producción pendiente.')">
+                    <span>📸</span><strong>Registrar producción</strong><small>Fotos realizadas por franja</small>
+                  </button>
+                  <button id="goIncidentBtn" class="active-action">
+                    <span>⚠️</span><strong>Informar incidencia</strong><small>Punto, electricidad o material</small>
+                  </button>
+                  <button class="active-action" onclick="alert('Módulo de objetivos pendiente.')">
+                    <span>🎯</span><strong>Ver objetivos</strong><small>Avance, ranking y comisión</small>
+                  </button>
+                </div>
+              </section>
+
+              <button id="resetDemoBtn" class="danger-btn full">Finalizar y reiniciar demo</button>
+            </div>
+
+
+            <!-- SALES TAB -->
+            <div id="salesPane" class="tab-pane">
+              <div class="welcome-row">
+                <div>
+                  <p class="eyebrow">Registro comercial</p>
+                  <h2>Ventas</h2>
+                </div>
+                <div class="date-time">
+                  <div>Producto preliminar</div>
+                  <strong>Foto Souvenir</strong>
+                </div>
+              </div>
+
+              <div id="salesLockedNotice" class="status-card">
+                <div class="status-line"><span class="status-dot"></span>VENTAS TODAVÍA NO HABILITADAS</div>
+                <h3>Primero confirmá el material recibido</h3>
+                <p>Los faltantes no impedirán vender. Solo es necesario confirmar qué elementos fueron recibidos.</p>
+                <button id="returnToCheckBtn" class="secondary-btn full" style="margin-top:14px">VOLVER A MATERIAL INICIAL</button>
+              </div>
+
+              <div id="salesEnabledContent" class="hidden">
+                <section id="openingCashCard" class="section-card">
+                  <div class="section-head">
+                    <div>
+                      <h3>Apertura de caja</h3>
+                      <p>Indicá con cuántos pesos comenzás el día para entregar vueltos.</p>
+                    </div>
+                    <span class="chip warn">Paso previo</span>
+                  </div>
+
+                  <div class="opening-cash-hero">
+                    <div class="opening-cash-icon">💵</div>
+                    <div>
+                      <strong>Caja inicial personal</strong>
+                      <p>Este dinero pertenece al fotógrafo, no se contabiliza como venta y al finalizar la jornada continúa siendo suyo.</p>
+                    </div>
+                  </div>
+
+                  <div class="field" style="margin-top:16px">
+                    <label for="openingCashInput">Caja inicial en pesos argentinos</label>
+                    <div class="money-input-wrap">
+                      <span>$</span>
+                      <input id="openingCashInput" type="number" min="0" step="100" placeholder="Ej.: 30000" />
+                    </div>
+                  </div>
+
+                  <div class="product-module-note">
+                    La caja inicial se utiliza para controlar movimientos y vueltos. Nunca se suma a la facturación ni al efectivo a rendir.
+                  </div>
+
+                  <button id="openCashBtn" class="primary-btn full" disabled>ABRIR CAJA DE VENTAS</button>
+                </section>
+
+                <div id="salesWorkspace" class="hidden">
+                  <div id="salesClosedNotice" class="status-card hidden">
+                    <div class="status-line" style="color:var(--success)"><span class="status-dot"></span>JORNADA CERRADA</div>
+                    <h3>Las ventas ya fueron cerradas</h3>
+                    <p>La liquidación quedó registrada. Podés consultarla e imprimirla desde la solapa Cierre.</p>
+                    <button id="goClosureFromSalesBtn" class="secondary-btn full" style="margin-top:14px">VER LIQUIDACIÓN</button>
+                  </div>
+
+                  <section class="section-card">
+                    <div class="section-head">
+                      <div>
+                        <h3>Resumen de la jornada</h3>
+                        <p>Ventas, descuentos, objetivo y posición actual de caja.</p>
+                      </div>
+                      <span id="salesStatusChip" class="chip">0 operaciones</span>
+                    </div>
+
+                    <div class="sales-summary-grid">
+                      <div class="metric-card">
+                        <span>Productos vendidos</span>
+                        <strong id="salesUnitsMetric">0</strong>
+                        <small>Objetivo mínimo: 20</small>
+                      </div>
+                      <div class="metric-card">
+                        <span>Operaciones</span>
+                        <strong id="salesTransactionsMetric">0</strong>
+                        <small>Tickets registrados</small>
+                      </div>
+                      <div class="metric-card highlight-metric">
+                        <span>Venta total equivalente</span>
+                        <strong id="totalSalesARSMetric">$ 0</strong>
+                        <small>Todas las monedas convertidas a ARS</small>
+                      </div>
+                      <div class="metric-card discount-metric">
+                        <span>Descuentos otorgados</span>
+                        <strong id="totalDiscountARSMetric">$ 0</strong>
+                        <small id="discountImpactMetric">0% sobre precio de lista</small>
+                      </div>
+                      <div class="metric-card cash-metric">
+                        <span>Caja inicial ARS</span>
+                        <strong id="openingCashMetric">$ 0</strong>
+                        <small>Fondo personal declarado</small>
+                      </div>
+                      <div class="metric-card cash-metric">
+                        <span>Pesos actuales en caja</span>
+                        <strong id="currentCashARSMetric">$ 0</strong>
+                        <small>Incluye fondo inicial y movimientos</small>
+                      </div>
+                    </div>
+
+                    <div id="goalCard" class="goal-progress-card">
+                      <div class="goal-progress-head">
+                        <div>
+                          <span>Avance sobre el objetivo</span>
+                          <strong id="goalMessage">Faltan 20 productos para alcanzar el objetivo.</strong>
+                        </div>
+                        <b id="goalCounter">0 / 20</b>
+                      </div>
+                      <div class="goal-progress-track">
+                        <div id="goalProgressFill" class="goal-progress-fill"></div>
+                      </div>
+                    </div>
+
+                    <div class="summary-subtitle">Ventas por medio de cobro</div>
+                    <div id="paymentBreakdown" class="payment-breakdown-grid"></div>
+
+                    <div class="summary-subtitle">Ventas cobradas por moneda</div>
+                    <div id="currencyTotals" class="dynamic-currency-grid"></div>
+
+                    <div class="summary-subtitle">Efectivo disponible por moneda</div>
+                    <div id="cashBalances" class="dynamic-currency-grid"></div>
+
+                    <div class="cash-explanation">
+                      Transferencias y tarjetas integran la venta total, pero no modifican el efectivo físico. Toda moneda extranjera se convierte a pesos usando el tipo de cambio guardado en cada operación.
+                    </div>
+                  </section>
+
+                  <section id="salesFormCard" class="section-card">
+                    <div class="section-head">
+                      <div>
+                        <h3>Nueva venta</h3>
+                        <p>Producto y reglas provisionales para probar el circuito.</p>
+                      </div>
+                      <span class="chip">Producto fijo</span>
+                    </div>
+
+                    <div class="product-card">
+                      <div class="product-visual">📸</div>
+                      <div class="product-copy">
+                        <span class="product-code">PRODUCTO DEMO · PHOTO-001</span>
+                        <h3>Foto Souvenir</h3>
+                        <p>Precio de lista: $18.000, R$ 50 o US$ 12. El fotógrafo puede aplicar un descuento dentro del mínimo permitido.</p>
+                      </div>
+                    </div>
+
+                    <div class="form-section">
+                      <div class="form-title">
+                        <span>1</span>
+                        <div><strong>Cantidad</strong><small>Unidades incluidas en esta operación.</small></div>
+                      </div>
+
+                      <div class="quantity-control">
+                        <button id="decreaseQty" type="button">−</button>
+                        <strong id="quantityValue">1</strong>
+                        <button id="increaseQty" type="button">+</button>
+                      </div>
+                    </div>
+
+                    <div class="form-section">
+                      <div class="form-title">
+                        <span>2</span>
+                        <div><strong>Medio de pago</strong><small>Define el precio mínimo autorizado.</small></div>
+                      </div>
+
+                      <div class="payment-options">
+                        <button type="button" class="payment-option" data-payment="cash">
+                          <b>💵</b><strong>Efectivo</strong><small>Mínimo demo equivalente a $15.000</small>
+                        </button>
+                        <button type="button" class="payment-option" data-payment="transfer">
+                          <b>📲</b><strong>Transferencia</strong><small>Mínimo demo equivalente a $15.000</small>
+                        </button>
+                        <button type="button" class="payment-option" data-payment="card">
+                          <b>💳</b><strong>Tarjeta</strong><small>Mínimo demo equivalente a $16.000</small>
+                        </button>
+                      </div>
+
+                      <div id="digitalPaymentPanel" class="payment-detail-panel hidden">
+                        <strong id="digitalPaymentTitle">Cobro informado</strong>
+                        <p>No se solicitan números de tarjeta, cupón, autorización ni datos bancarios. Solo queda registrado el medio de cobro seleccionado.</p>
+                      </div>
+                    </div>
+
+                    <div class="form-section">
+                      <div class="form-title">
+                        <span>3</span>
+                        <div><strong>Moneda de cobro</strong><small>Podés utilizar una moneda configurada u otra moneda extranjera.</small></div>
+                      </div>
+
+                      <div class="price-options">
+                        <button type="button" class="price-option selected" data-currency-group="ARS">
+                          <span>Pesos argentinos</span>
+                          <strong>$ 18.000</strong>
+                          <small>ARS por unidad</small>
+                        </button>
+                        <button type="button" class="price-option" data-currency-group="BRL">
+                          <span>Reales</span>
+                          <strong>R$ 50</strong>
+                          <small>TC demo: $300</small>
+                        </button>
+                        <button type="button" class="price-option" data-currency-group="USD">
+                          <span>Dólares</span>
+                          <strong>US$ 12</strong>
+                          <small>TC demo: $1.500</small>
+                        </button>
+                        <button type="button" class="price-option" data-currency-group="OTHER">
+                          <span>Otra moneda</span>
+                          <strong>Elegir</strong>
+                          <small>Cambio manual</small>
+                        </button>
+                      </div>
+
+                      <div id="otherCurrencyPanel" class="payment-detail-panel hidden">
+                        <div class="two-column-fields">
+                          <div class="field">
+                            <label for="otherCurrencySelect">Moneda extranjera</label>
+                            <select id="otherCurrencySelect">
+                              <option value="">Seleccionar</option>
+                              <option value="EUR">Euros (EUR)</option>
+                              <option value="CLP">Pesos chilenos (CLP)</option>
+                              <option value="UYU">Pesos uruguayos (UYU)</option>
+                              <option value="PEN">Soles peruanos (PEN)</option>
+                              <option value="MXN">Pesos mexicanos (MXN)</option>
+                            </select>
+                          </div>
+                          <div class="field">
+                            <label for="manualExchangeRate">Tipo de cambio</label>
+                            <div class="rate-input-wrap">
+                              <span>$ ARS</span>
+                              <input id="manualExchangeRate" type="number" min="0.0001" step="0.0001" placeholder="Por 1 unidad" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="cash-explanation">
+                          El fotógrafo informa cuántos pesos argentinos representa una unidad de la moneda seleccionada. Ese valor queda guardado dentro de la venta.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-section">
+                      <div class="form-title">
+                        <span>4</span>
+                        <div><strong>Valor final de venta</strong><small>El precio viene preestablecido, pero puede modificarse dentro del mínimo permitido.</small></div>
+                      </div>
+
+                      <div class="price-editor-grid">
+                        <div class="price-data-box">
+                          <span>Precio de lista por unidad</span>
+                          <strong id="listUnitPrice">—</strong>
+                        </div>
+                        <div class="field price-edit-field">
+                          <label for="editableUnitPrice">Precio final por unidad</label>
+                          <div class="money-input-wrap">
+                            <span id="editableCurrencyPrefix">$</span>
+                            <input id="editableUnitPrice" type="number" min="0" step="0.01" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div id="minimumPriceBox" class="minimum-price-box">
+                        <div>
+                          <span>Mínimo permitido</span>
+                          <strong id="minimumPriceLabel">Seleccioná el medio de pago</strong>
+                        </div>
+                        <span id="minimumEquivalentLabel">—</span>
+                      </div>
+
+                      <div id="priceValidationError" class="inline-warning hidden"></div>
+
+                      <div class="discount-summary">
+                        <div><span>Descuento por unidad</span><strong id="discountAmount">—</strong></div>
+                        <div><span>Descuento aplicado</span><strong id="discountPercent">—</strong></div>
+                        <div><span>Equivalente ARS por unidad</span><strong id="arsEquivalentPrice">—</strong></div>
+                      </div>
+                    </div>
+
+                    <div id="cashPanel" class="payment-detail-panel hidden">
+                      <div class="field" style="margin-bottom:10px">
+                        <label for="cashReceived">Importe recibido en <span id="receivedCurrencyLabel">la moneda seleccionada</span></label>
+                        <input id="cashReceived" class="standalone-input" type="number" min="0" step="0.01" placeholder="Ingresar importe recibido" />
+                        <small class="field-helper">El sistema trae automáticamente el total exacto. Solo modificá este importe cuando el cliente entregue más dinero.</small>
+                      </div>
+
+                      <div id="foreignChangeInfo" class="foreign-change-info hidden">
+                        El cliente entrega moneda extranjera y cualquier excedente se devuelve en pesos argentinos al tipo de cambio utilizado en esta venta.
+                      </div>
+
+                      <div class="change-box">
+                        <span id="changeLabel">Vuelto a entregar</span>
+                        <strong id="cashChange">—</strong>
+                      </div>
+
+                      <div id="cashAfterChangeBox" class="cash-after-change hidden">
+                        <span>Pesos que quedarían en caja</span>
+                        <strong id="cashAfterChange">—</strong>
+                      </div>
+
+                      <div id="cashError" class="inline-warning hidden"></div>
+                    </div>
+
+                    <div class="checkout-summary">
+                      <div>
+                        <span>Producto</span>
+                        <strong id="summaryProduct">1 × Foto Souvenir</strong>
+                      </div>
+                      <div>
+                        <span>Medio de pago</span>
+                        <strong id="summaryPayment">Pendiente</strong>
+                      </div>
+                      <div>
+                        <span>Precio unitario final</span>
+                        <strong id="summaryUnitPrice">—</strong>
+                      </div>
+                      <div>
+                        <span>Descuento total</span>
+                        <strong id="summaryDiscount">—</strong>
+                      </div>
+                      <div>
+                        <span>Equivalente total en ARS</span>
+                        <strong id="summaryARSEquivalent">—</strong>
+                      </div>
+                      <div id="summaryForeignChangeRow" class="hidden">
+                        <span>Vuelto en pesos argentinos</span>
+                        <strong id="summaryForeignChange">—</strong>
+                      </div>
+                      <div class="checkout-total">
+                        <span>Total a cobrar</span>
+                        <strong id="summaryTotal">—</strong>
+                      </div>
+                    </div>
+
+                    <div class="product-module-note">
+                      Los precios, mínimos, tipos de cambio y consumo de stock serán configurables desde el futuro <strong>Módulo de Productos</strong>. En esta demo, transferencia usa el mismo mínimo que efectivo.
+                    </div>
+
+                    <button id="registerSaleBtn" class="primary-btn full" disabled>CONFIRMAR Y REGISTRAR VENTA</button>
+                  </section>
+
+                  <div id="saleSuccess" class="sale-success hidden"></div>
+
+                  <section class="section-card">
+                    <div class="section-head">
+                      <div>
+                        <h3>Ventas registradas hoy</h3>
+                        <p>Últimas operaciones, descuentos y equivalentes.</p>
+                      </div>
+                    </div>
+                    <div id="salesHistory" class="sales-history">
+                      <div class="history-empty">Todavía no se registraron ventas.</div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+
+            <!-- CLOSURE TAB -->
+            <div id="closurePane" class="tab-pane">
+              <div class="welcome-row">
+                <div>
+                  <p class="eyebrow">Liquidación operativa</p>
+                  <h2>Cierre de jornada</h2>
+                </div>
+                <div class="date-time">
+                  <div>Comisión demo</div>
+                  <strong>15% sobre ventas</strong>
+                </div>
+              </div>
+
+              <div id="closureLockedNotice" class="status-card">
+                <div class="status-line"><span class="status-dot"></span>CIERRE TODAVÍA NO DISPONIBLE</div>
+                <h3>Primero habilitá ventas y abrí la caja</h3>
+                <p>El cierre se activa una vez completado el chequeo operativo y declarada la caja inicial.</p>
+                <button id="goSalesFromClosureBtn" class="secondary-btn full" style="margin-top:14px">IR A VENTAS</button>
+              </div>
+
+              <div id="closureWorkspace" class="hidden">
+                <div id="closureForm">
+                  <section class="section-card">
+                    <div class="section-head">
+                      <div>
+                        <h3>Resumen para liquidar</h3>
+                        <p>Vista previa calculada con todas las ventas registradas.</p>
+                      </div>
+                      <span class="chip warn">Sin cerrar</span>
+                    </div>
+
+                    <div class="closure-kpis">
+                      <div><span>Venta total equivalente</span><strong id="closureTotalSalesARS">$ 0</strong></div>
+                      <div><span>Productos vendidos</span><strong id="closureUnits">0</strong></div>
+                      <div><span>Descuentos otorgados</span><strong id="closureDiscountARS">$ 0</strong></div>
+                      <div><span>Impacto del descuento</span><strong id="closureDiscountPercent">0%</strong></div>
+                    </div>
+
+                    <div id="closureGoalResult" class="goal-result-box"></div>
+
+                    <div class="summary-subtitle">Totales por medio de cobro</div>
+                    <div id="closurePaymentBreakdown" class="payment-breakdown-grid"></div>
+
+                    <div class="summary-subtitle">Totales por moneda</div>
+                    <div id="closureCurrencyBreakdown" class="dynamic-currency-grid"></div>
+                  </section>
+
+                  <section class="section-card">
+                    <div class="section-head">
+                      <div>
+                        <h3>Comisión del fotógrafo</h3>
+                        <p>Referencia provisoria: 15% sobre la venta total equivalente en pesos.</p>
+                      </div>
+                      <span id="commissionAmountChip" class="chip">$ 0</span>
+                    </div>
+
+                    <div class="commission-options">
+                      <button type="button" class="commission-option" data-commission-method="cash">
+                        <b>💵</b>
+                        <strong>Cobrar en efectivo</strong>
+                        <small>Se descuenta del efectivo ARS a rendir.</small>
+                      </button>
+                      <button type="button" class="commission-option" data-commission-method="transfer">
+                        <b>📲</b>
+                        <strong>Cobrar por transferencia</strong>
+                        <small>No modifica el efectivo físico de la caja.</small>
+                      </button>
+                    </div>
+
+                    <div id="commissionCashWarning" class="inline-warning hidden"></div>
+
+                    <div class="summary-subtitle">Separación de caja en pesos argentinos</div>
+                    <div id="closureARSWaterfall" class="cash-waterfall"></div>
+
+                    <div class="summary-subtitle">Efectivo físico a rendir por moneda</div>
+                    <div id="closureCashByCurrency" class="cash-settlement-grid"></div>
+
+                    <div class="summary-subtitle">Cobros digitales - no forman parte de la caja física</div>
+                    <div id="closureDigitalByMethod" class="payment-breakdown-grid"></div>
+
+                    <div class="cash-explanation">
+                      En moneda extranjera se rinde el efectivo realmente recibido. Por ejemplo, si una venta es de US$110, el cliente entrega US$120 y el vuelto se da en pesos, el cierre debe rendir US$120 y descontar de la caja ARS el vuelto equivalente.
+                    </div>
+                  </section>
+
+                  <section class="section-card">
+                    <div class="section-head">
+                      <div>
+                        <h3>Stock de devolución</h3>
+                        <p>Stock teórico luego de descontar los productos vendidos.</p>
+                      </div>
+                      <span class="chip">Control final</span>
+                    </div>
+
+                    <div class="stock-close-note">
+                      Consumo demo por producto vendido: 1 portarretrato, 1 sticker y 2 hojas. Al cerrar, el fotógrafo debe informar cuántas voligomas utilizó.
+                    </div>
+
+                    <div id="closureStockTable" class="closure-stock-table"></div>
+                  </section>
+
+                  <section class="section-card">
+                    <div class="section-head">
+                      <div>
+                        <h3>Estado operativo al finalizar</h3>
+                        <p>Confirmá cómo funcionó el material y si hay novedades del punto de venta.</p>
+                      </div>
+                      <span class="chip">Control final</span>
+                    </div>
+
+                    <div class="final-check-grid">
+                      <div class="final-check-box">
+                        <strong>Material de trabajo</strong>
+                        <label><input type="radio" name="finalMaterialStatus" value="ok"> Todo funcionó correctamente</label>
+                        <label><input type="radio" name="finalMaterialStatus" value="issue"> Hay un problema para informar</label>
+                        <div id="finalMaterialDetailWrap" class="field hidden" style="margin:10px 0 0">
+                          <label for="finalMaterialDetail">Detalle del problema</label>
+                          <textarea id="finalMaterialDetail" placeholder="Indicá el equipo, qué ocurrió y si pudo seguir utilizándose..."></textarea>
+                        </div>
+                      </div>
+
+                      <div class="final-check-box">
+                        <strong>Punto de venta</strong>
+                        <label><input type="radio" name="finalPointStatus" value="ok"> Sin novedades</label>
+                        <label><input type="radio" name="finalPointStatus" value="issue"> Hay algo para informar</label>
+                        <div id="finalPointDetailWrap" class="field hidden" style="margin:10px 0 0">
+                          <label for="finalPointDetail">Detalle del punto</label>
+                          <textarea id="finalPointDetail" placeholder="Electricidad, condiciones, acceso, operación u otra novedad..."></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="section-card">
+                    <div class="section-head">
+                      <div>
+                        <h3>Observaciones</h3>
+                        <p>Campo opcional para aclaraciones del cierre.</p>
+                      </div>
+                    </div>
+
+                    <div class="field" style="margin-bottom:0">
+                      <label for="closureObservations">Observaciones de la jornada</label>
+                      <textarea id="closureObservations" placeholder="Diferencias de caja, materiales, incidencias, aclaraciones o comentarios..."></textarea>
+                    </div>
+                  </section>
+
+                  <div id="closureRequirements" class="closure-requirements">
+                    Seleccioná cómo se cobrará la comisión, completá el stock y confirmá el estado operativo final.
+                  </div>
+
+                  <button id="closeShiftBtn" class="primary-btn full" disabled>CERRAR JORNADA Y GENERAR LIQUIDACIÓN</button>
+                </div>
+
+                <div id="closedLiquidation" class="hidden">
+                  <div id="printableLiquidation" class="printable-liquidation">
+                    <div class="liquidation-header">
+                      <div class="brand-mark">WBA</div>
+                      <div>
+                        <span>WELCOME BUENOS AIRES</span>
+                        <h2>Liquidación final de jornada</h2>
+                        <p id="liquidationIdLine">—</p>
+                      </div>
+                      <div class="liquidation-status">CERRADA</div>
+                    </div>
+
+                    <div class="liquidation-info-grid">
+                      <div><span>Fotógrafo</span><strong>Valentín</strong></div>
+                      <div><span>Punto</span><strong>Mirador Obelisco</strong></div>
+                      <div><span>Inicio</span><strong id="liquidationStart">—</strong></div>
+                      <div><span>Cierre</span><strong id="liquidationEnd">—</strong></div>
+                    </div>
+
+                    <div class="liquidation-section">
+                      <h3>Resultado comercial</h3>
+                      <div class="liquidation-total-grid">
+                        <div><span>Productos vendidos</span><strong id="liquidationUnits">0</strong></div>
+                        <div><span>Operaciones</span><strong id="liquidationTransactions">0</strong></div>
+                        <div><span>Venta total equivalente</span><strong id="liquidationSalesARS">$ 0</strong></div>
+                        <div><span>Descuentos</span><strong id="liquidationDiscount">$ 0</strong></div>
+                        <div><span>Impacto descuento</span><strong id="liquidationDiscountImpact">0%</strong></div>
+                        <div><span>Objetivo</span><strong id="liquidationGoal">—</strong></div>
+                      </div>
+                    </div>
+
+                    <div class="liquidation-section">
+                      <h3>Totales por medio de cobro</h3>
+                      <div id="liquidationPayments" class="print-breakdown"></div>
+                    </div>
+
+                    <div class="liquidation-section">
+                      <h3>Totales por moneda</h3>
+                      <div id="liquidationCurrencies" class="print-breakdown"></div>
+                    </div>
+
+                    <div class="liquidation-section">
+                      <h3>Caja, comisión y efectivo a rendir</h3>
+                      <div class="liquidation-total-grid">
+                        <div><span>Comisión 15%</span><strong id="liquidationCommission">$ 0</strong></div>
+                        <div><span>Forma de cobro</span><strong id="liquidationCommissionMethod">—</strong></div>
+                        <div><span>Caja inicial personal</span><strong id="liquidationOpeningCash">$ 0</strong></div>
+                        <div><span>ARS físico al cierre</span><strong id="liquidationPhysicalARS">$ 0</strong></div>
+                        <div><span>ARS a rendir</span><strong id="liquidationCashToRender">$ 0</strong></div>
+                        <div><span>Reintegro al fotógrafo</span><strong id="liquidationReimbursement">$ 0</strong></div>
+                      </div>
+                      <div class="summary-subtitle">Detalle de caja ARS</div>
+                      <div id="liquidationARSWaterfall" class="print-breakdown"></div>
+                      <div class="summary-subtitle">Efectivo a rendir por moneda</div>
+                      <div id="liquidationForeignCash" class="print-breakdown"></div>
+                      <div class="summary-subtitle">Cobros digitales</div>
+                      <div id="liquidationDigital" class="print-breakdown"></div>
+                    </div>
+
+                    <div class="liquidation-section">
+                      <h3>Stock devuelto</h3>
+                      <div id="liquidationStock" class="print-stock-table"></div>
+                    </div>
+
+                    <div class="liquidation-section">
+                      <h3>Estado operativo final</h3>
+                      <div id="liquidationOperationalStatus" class="print-breakdown"></div>
+                    </div>
+
+                    <div class="liquidation-section">
+                      <h3>Observaciones</h3>
+                      <p id="liquidationObservations" class="liquidation-observations">Sin observaciones.</p>
+                    </div>
+
+                    <div class="liquidation-footer">
+                      Liquidación registrada en el sistema. Los valores de precios, comisión y consumo de stock corresponden a la configuración demo.
+                    </div>
+                  </div>
+
+                  <div class="liquidation-actions">
+                    <button id="printLiquidationBtn" class="secondary-btn">GENERAR PDF / IMPRIMIR</button>
+                    <button id="backToLiquidationBtn" class="ghost-btn">VER RESUMEN</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- INCIDENTS TAB -->
+            <div id="incidentsPane" class="tab-pane">
+              <div class="welcome-row">
+                <div>
+                  <p class="eyebrow">Gestión operativa</p>
+                  <h2>Incidencias</h2>
+                </div>
+                <div class="date-time">
+                  <div>Notificación automática</div>
+                  <strong>Jonatan + Administración</strong>
+                </div>
+              </div>
+
+              <section class="section-card">
+                <div class="section-head">
+                  <div>
+                    <h3>Nueva incidencia</h3>
+                    <p>Seleccioná el tipo de problema y agregá el detalle.</p>
+                  </div>
+                  <span class="chip warn">Se envía al encargado</span>
+                </div>
+
+                <div class="incident-category-grid">
+                  <label class="incident-option">
+                    <input type="radio" name="incidentType" value="Mal estado del punto" />
+                    <div><strong>Mal estado del punto</strong><span>Limpieza, acceso, mobiliario o condiciones generales.</span></div>
+                  </label>
+                  <label class="incident-option">
+                    <input type="radio" name="incidentType" value="Falta de electricidad" />
+                    <div><strong>Falta de electricidad</strong><span>Corte total, enchufes o suministro eléctrico.</span></div>
+                  </label>
+                  <label class="incident-option">
+                    <input type="radio" name="incidentType" value="Material de trabajo" />
+                    <div><strong>Material de trabajo</strong><span>Equipo faltante, roto o que dejó de funcionar.</span></div>
+                  </label>
+                  <label class="incident-option">
+                    <input type="radio" name="incidentType" value="Otro problema operativo" />
+                    <div><strong>Otro problema operativo</strong><span>Cualquier situación que afecte la jornada.</span></div>
+                  </label>
+                </div>
+
+                <div id="affectedMaterialField" class="field hidden" style="margin-top:16px">
+                  <label for="affectedMaterial">Material afectado</label>
+                  <select id="affectedMaterial">
+                    <option value="">Seleccionar material</option>
+                  </select>
+                </div>
+
+                <div class="field" style="margin-top:16px">
+                  <label for="incidentDetail">Detalle del problema</label>
+                  <textarea id="incidentDetail" placeholder="Explicá qué sucede, desde cuándo y cómo afecta la operación..."></textarea>
+                </div>
+
+                <button id="sendIncidentBtn" class="danger-btn full" disabled>ENVIAR INCIDENCIA</button>
+              </section>
+
+              <section class="section-card">
+                <div class="section-head">
+                  <div>
+                    <h3>Incidencias informadas hoy</h3>
+                    <p>Registro trazable de avisos enviados.</p>
+                  </div>
+                  <span id="incidentCountChip" class="chip">0 registradas</span>
+                </div>
+                <div id="incidentHistory" class="incident-history">
+                  <div class="history-empty">Todavía no se registraron incidencias.</div>
+                </div>
+              </section>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Confirmación inicio -->
+  <div id="confirmModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-icon">▶</div>
+      <h3>Confirmar inicio del turno</h3>
+      <p>Se registrarán la ubicación, la hora real de inicio y el stock recibido.</p>
+
+      <div class="confirm-data">
+        <div><span>Punto</span><strong>Mirador Obelisco</strong></div>
+        <div><span>Hora de inicio</span><strong id="confirmTime">—</strong></div>
+        <div><span>Ubicación</span><strong id="confirmLocation">—</strong></div>
+        <div><span>Stock</span><strong id="confirmStock">—</strong></div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="cancelConfirm" class="ghost-btn">Cancelar</button>
+        <button id="confirmStart" class="primary-btn">Confirmar inicio</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const stockPreset = [
+      {name:"Portarretratos",icon:"🖼️",expected:30},
+      {name:"Stickers",icon:"🏷️",expected:40},
+      {name:"Hojas",icon:"📄",expected:50},
+      {name:"Voligoma",icon:"🧴",expected:2}
+    ];
+
+    const assignedEquipment = [
+      {id:"camera",name:"Cámara",icon:"📷",model:"Canon EOS R10",code:"CAM-014"},
+      {id:"tablet",name:"Tablet",icon:"💻",model:"Samsung Galaxy Tab A9+",code:"TAB-008"},
+      {id:"printer",name:"Impresora",icon:"🖨️",model:"Epson PictureMate PM-520",code:"IMP-005"},
+      {id:"charger",name:"Cargador",icon:"🔌",model:"Canon LC-E17",code:"CAR-012"},
+      {id:"battery",name:"Batería",icon:"🔋",model:"Canon LP-E17",code:"BAT-021"},
+      {id:"memory1",name:"Memoria 1",icon:"💾",model:"SanDisk Extreme Pro SDXC 128 GB",code:"MEM-031"},
+      {id:"memory2",name:"Memoria 2",icon:"💾",model:"SanDisk Extreme Pro SDXC 128 GB",code:"MEM-032"}
+    ];
+
+    const state = {
+      locationChecked:false,
+      locationLabel:"",
+      stock:{},
+      toolChecks:{},
+      toolsConfirmed:false,
+      incidents:[],
+      sales:[],
+      cashOpeningARS:null,
+      closure:null
+    };
+
+    const loginScreen=document.getElementById("loginScreen");
+    const startScreen=document.getElementById("startScreen");
+    const activeScreen=document.getElementById("activeScreen");
+    const username=document.getElementById("username");
+    const password=document.getElementById("password");
+    const rememberUser=document.getElementById("rememberUser");
+    const loginError=document.getElementById("loginError");
+
+    const savedUser=localStorage.getItem("wbaSavedUserV7");
+    if(savedUser){
+      username.value=savedUser;
+      rememberUser.checked=true;
+    }
+
+    function showScreen(screen){
+      [loginScreen,startScreen,activeScreen].forEach(el=>el.classList.remove("active"));
+      screen.classList.add("active");
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    document.getElementById("togglePassword").addEventListener("click",()=>{
+      password.type=password.type==="password"?"text":"password";
+    });
+
+    document.getElementById("loginForm").addEventListener("submit",(event)=>{
+      event.preventDefault();
+      loginError.classList.add("hidden");
+
+      if(username.value.trim().toLowerCase()!=="valentin" || password.value!=="1234"){
+        loginError.textContent="Usuario o contraseña incorrectos. Usá valentin / 1234 para probar la maqueta.";
+        loginError.classList.remove("hidden");
+        return;
+      }
+
+      if(rememberUser.checked)localStorage.setItem("wbaSavedUserV7",username.value.trim());
+      else localStorage.removeItem("wbaSavedUserV7");
+
+      if(localStorage.getItem("wbaActiveShiftV7")){
+        showScreen(activeScreen);
+        hydrateActiveState();
+        startTimer();
+      }else{
+        showScreen(startScreen);
+      }
+    });
+
+    document.getElementById("profileButton").addEventListener("click",()=>{
+      document.getElementById("profileMenu").classList.toggle("hidden");
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click",()=>{
+      document.getElementById("profileMenu").classList.add("hidden");
+      password.value="";
+      showScreen(loginScreen);
+    });
+
+    function formatDate(date){
+      return new Intl.DateTimeFormat("es-AR",{
+        timeZone:"America/Argentina/Buenos_Aires",
+        weekday:"long",day:"numeric",month:"long",year:"numeric"
+      }).format(date);
+    }
+
+    function formatTime(date){
+      return new Intl.DateTimeFormat("es-AR",{
+        timeZone:"America/Argentina/Buenos_Aires",
+        hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false
+      }).format(date);
+    }
+
+    function tickClock(){
+      const now=new Date();
+      const date=formatDate(now);
+      const label=date.charAt(0).toUpperCase()+date.slice(1);
+      const time=formatTime(now)+" hs";
+      document.getElementById("currentDate").textContent=label;
+      document.getElementById("currentTime").textContent=time;
+      document.getElementById("activeDate").textContent=label;
+      document.getElementById("activeTime").textContent=time;
+    }
+    tickClock();
+    setInterval(tickClock,1000);
+
+    function renderEquipmentSummary(){
+      document.getElementById("equipmentSummary").innerHTML=assignedEquipment
+        .filter(item=>["camera","tablet","printer"].includes(item.id))
+        .map(item=>`
+          <div class="equipment-summary-row">
+            <div class="equipment-icon">${item.icon}</div>
+            <div class="equipment-copy">
+              <strong>${item.name}: ${item.model}</strong>
+              <span>Equipo asignado para Mirador Obelisco</span>
+            </div>
+            <span class="asset-code">${item.code}</span>
+          </div>
+        `).join("");
+    }
+    renderEquipmentSummary();
+
+    function renderStock(){
+      document.getElementById("stockList").innerHTML=stockPreset.map((item,index)=>`
+        <div class="stock-row">
+          <div class="stock-name"><span class="stock-icon">${item.icon}</span>${item.name}</div>
+          <div class="stock-expected"><span>Asignado</span><strong>${item.expected}</strong></div>
+          <div class="stock-input"><span>Recibido</span><input type="number" min="0" step="1" data-stock="${index}" placeholder="0"></div>
+        </div>
+      `).join("");
+
+      document.querySelectorAll("[data-stock]").forEach(input=>{
+        input.addEventListener("input",()=>{
+          const index=Number(input.dataset.stock);
+          const raw=input.value.trim();
+          state.stock[index]=raw===""?null:Number(raw);
+          updateStartRequirements();
+        });
+      });
+    }
+    renderStock();
+
+    function stockComplete(){
+      return stockPreset.every((_,index)=>Number.isFinite(state.stock[index])&&state.stock[index]>=0);
+    }
+
+    function hasStockDifferences(){
+      return stockComplete()&&stockPreset.some((item,index)=>state.stock[index]!==item.expected);
+    }
+
+    function stockSummary(){
+      if(!stockComplete())return"Pendiente";
+      return hasStockDifferences()?"Con diferencias":"Coincide con lo asignado";
+    }
+
+    function getBuenosAiresParts(){
+      const parts=new Intl.DateTimeFormat("en-CA",{
+        timeZone:"America/Argentina/Buenos_Aires",
+        hour:"2-digit",minute:"2-digit",hour12:false
+      }).formatToParts(new Date());
+      const map={};
+      parts.forEach(part=>map[part.type]=part.value);
+      return{hour:Number(map.hour),minute:Number(map.minute)};
+    }
+
+    function arrivalMessage(){
+      const{hour,minute}=getBuenosAiresParts();
+      const diff=hour*60+minute-9*60;
+      const box=document.getElementById("arrivalMessage");
+
+      if(diff<-5)box.innerHTML=`<strong>Llegada anticipada:</strong> estás validando ${Math.abs(diff)} minutos antes del horario programado.`;
+      else if(diff>5)box.innerHTML=`<strong>Llegada tardía:</strong> estás validando ${diff} minutos después del horario programado.`;
+      else box.innerHTML="<strong>Llegada correcta:</strong> estás dentro del horario previsto.";
+    }
+
+    document.getElementById("locationBtn").addEventListener("click",()=>{
+      const result=document.getElementById("locationResult");
+      const button=document.getElementById("locationBtn");
+      button.textContent="Validando...";
+      button.disabled=true;
+
+      const finish=(ok,label)=>{
+        state.locationChecked=true;
+        state.locationLabel=label;
+        result.className="location-result "+(ok?"ok":"warn");
+        result.textContent=label;
+        result.classList.remove("hidden");
+        button.textContent="Volver a validar";
+        button.disabled=false;
+        arrivalMessage();
+        updateStartRequirements();
+      };
+
+      if(!navigator.geolocation){
+        setTimeout(()=>finish(false,"Ubicación no disponible. El inicio quedará registrado con excepción."),600);
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        ()=>finish(true,"✓ Ubicación confirmada cerca del punto asignado."),
+        ()=>finish(false,"No pudimos validar la ubicación. Podés iniciar, pero se notificará al encargado."),
+        {enableHighAccuracy:false,timeout:5000,maximumAge:60000}
+      );
+    });
+
+    document.getElementById("stockAck").addEventListener("change",updateStartRequirements);
+    document.getElementById("instructionAck").addEventListener("change",updateStartRequirements);
+
+    function updateStartRequirements(){
+      const differenceBox=document.getElementById("stockDifferenceBox");
+      const stockChip=document.getElementById("stockStatusChip");
+
+      if(stockComplete()){
+        if(hasStockDifferences()){
+          differenceBox.classList.remove("hidden");
+          stockChip.textContent="Con diferencias";
+          stockChip.className="chip warn";
+        }else{
+          differenceBox.classList.add("hidden");
+          stockChip.textContent="✓ Verificado";
+          stockChip.className="chip";
+        }
+      }else{
+        differenceBox.classList.add("hidden");
+        stockChip.textContent="Pendiente";
+        stockChip.className="chip warn";
+      }
+
+      const ready=
+        state.locationChecked &&
+        stockComplete() &&
+        document.getElementById("stockAck").checked &&
+        document.getElementById("instructionAck").checked;
+
+      document.getElementById("startShiftBtn").disabled=!ready;
+
+      const missing=[];
+      if(!state.locationChecked)missing.push("ubicación");
+      if(!stockComplete())missing.push("cantidades de stock");
+      if(!document.getElementById("stockAck").checked)missing.push("confirmación de stock");
+      if(!document.getElementById("instructionAck").checked)missing.push("indicación diaria");
+
+      document.getElementById("requirementsText").textContent=ready
+        ?"Todo listo para iniciar el turno."
+        :"Pendiente: "+missing.join(", ")+".";
+    }
+
+    document.getElementById("startShiftBtn").addEventListener("click",()=>{
+      document.getElementById("confirmTime").textContent=formatTime(new Date())+" hs";
+      document.getElementById("confirmLocation").textContent=state.locationLabel.includes("confirmada")?"Confirmada":"Con excepción";
+      document.getElementById("confirmStock").textContent=stockSummary();
+      document.getElementById("confirmModal").classList.remove("hidden");
+    });
+
+    document.getElementById("cancelConfirm").addEventListener("click",()=>{
+      document.getElementById("confirmModal").classList.add("hidden");
+    });
+
+    document.getElementById("confirmStart").addEventListener("click",()=>{
+      const record={
+        start:new Date().toISOString(),
+        location:state.locationLabel,
+        stock:state.stock,
+        stockDifference:hasStockDifferences(),
+        toolChecks:{},
+        toolsConfirmed:false,
+        incidents:[],
+        sales:[],
+        cashOpeningARS:null,
+        closure:null
+      };
+      localStorage.setItem("wbaActiveShiftV7",JSON.stringify(record));
+      document.getElementById("confirmModal").classList.add("hidden");
+      showScreen(activeScreen);
+      hydrateActiveState();
+      startTimer();
+    });
+
+    function renderToolChecks(){
+      document.getElementById("toolList").innerHTML=assignedEquipment.map((item,index)=>`
+        <div class="tool-row" data-tool-row="${index}">
+          <div class="tool-head">
+            <div class="equipment-icon">${item.icon}</div>
+            <div class="tool-copy">
+              <strong>${item.name}</strong>
+              <span>${item.model} · ${item.code}</span>
+            </div>
+            <span id="toolLabel-${index}" class="tool-status-label">Sin confirmar</span>
+          </div>
+
+          <div class="tool-options" style="grid-template-columns:1fr 1fr">
+            <button type="button" data-tool-index="${index}" data-status="ok">✓ Lo recibí</button>
+            <button type="button" data-tool-index="${index}" data-status="missing">No lo tengo</button>
+          </div>
+
+          <div id="toolDetail-${index}" class="tool-detail hidden">
+            <textarea data-tool-detail="${index}" placeholder="Detallá el faltante para notificar al encargado..."></textarea>
+          </div>
+        </div>
+      `).join("");
+
+      document.querySelectorAll("[data-tool-index]").forEach(button=>{
+        button.addEventListener("click",()=>{
+          const index=Number(button.dataset.toolIndex);
+          const status=button.dataset.status;
+          const row=document.querySelector(`[data-tool-row="${index}"]`);
+          row.querySelectorAll("[data-tool-index]").forEach(btn=>btn.className="");
+          button.classList.add(status==="ok"?"selected-ok":"selected-missing");
+
+          const existing=state.toolChecks[index]||{detail:""};
+          state.toolChecks[index]={status,detail:existing.detail||""};
+
+          const detail=document.getElementById(`toolDetail-${index}`);
+          const label=document.getElementById(`toolLabel-${index}`);
+          label.className="tool-status-label "+status;
+          label.textContent=status==="ok"?"Recibido":"Faltante";
+
+          if(status==="ok"){
+            detail.classList.add("hidden");
+            state.toolChecks[index].detail="";
+            detail.querySelector("textarea").value="";
+          }else{
+            detail.classList.remove("hidden");
+          }
+          updateToolGate();
+        });
+      });
+
+      document.querySelectorAll("[data-tool-detail]").forEach(textarea=>{
+        textarea.addEventListener("input",()=>{
+          const index=Number(textarea.dataset.toolDetail);
+          if(state.toolChecks[index])state.toolChecks[index].detail=textarea.value.trim();
+          updateToolGate();
+        });
+      });
+    }
+    renderToolChecks();
+
+    function toolChecksComplete(){
+      return assignedEquipment.every((_,index)=>{
+        const item=state.toolChecks[index];
+        if(!item||!item.status)return false;
+        if(item.status==="ok")return true;
+        return item.detail&&item.detail.length>=3;
+      });
+    }
+
+    function hasToolIssues(){
+      return assignedEquipment.some((_,index)=>{
+        const item=state.toolChecks[index];
+        return item&&item.status&&item.status!=="ok";
+      });
+    }
+
+    function updateToolGate(){
+      const complete=toolChecksComplete();
+      document.getElementById("confirmToolsBtn").disabled=!complete;
+      document.getElementById("toolIssueAlert").classList.toggle("hidden",!hasToolIssues());
+    }
+
+    function createAutomaticMaterialIncidents(){
+      assignedEquipment.forEach((item,index)=>{
+        const check=state.toolChecks[index];
+        if(check&&check.status!=="ok"){
+          state.incidents.push({
+            type:"Material de trabajo",
+            material:`${item.name} · ${item.model} · ${item.code}`,
+            detail:`Elemento asignado no recibido al inicio. ${check.detail}`,
+            time:formatTime(new Date()),
+            automatic:true
+          });
+        }
+      });
+    }
+
+    document.getElementById("confirmToolsBtn").addEventListener("click",()=>{
+      state.toolsConfirmed=true;
+      if(hasToolIssues())createAutomaticMaterialIncidents();
+
+      const active=JSON.parse(localStorage.getItem("wbaActiveShiftV7")||"{}");
+      active.toolChecks=state.toolChecks;
+      active.toolsConfirmed=true;
+      active.incidents=state.incidents;
+      localStorage.setItem("wbaActiveShiftV7",JSON.stringify(active));
+
+      applyToolsConfirmedUI();
+      renderIncidentHistory();
+
+      if(hasToolIssues()){
+        alert("Material inicial confirmado. Las ventas fueron habilitadas y los faltantes se notificaron al encargado.");
+      }else{
+        alert("Material inicial confirmado. Todos los elementos asignados fueron recibidos y las ventas quedaron habilitadas.");
+      }
+    });
+
+    function applyToolsConfirmedUI(){
+      const gate=document.getElementById("toolGate");
+      gate.classList.remove("with-issues");
+      gate.classList.add(hasToolIssues()?"with-issues":"ready");
+
+      const chip=document.getElementById("toolStatusChip");
+      chip.textContent=hasToolIssues()?"Ventas habilitadas · faltantes informados":"✓ Material inicial confirmado";
+      chip.className=hasToolIssues()?"chip danger":"chip";
+
+      const confirmBtn=document.getElementById("confirmToolsBtn");
+      confirmBtn.textContent=hasToolIssues()?"MATERIAL CONFIRMADO · ENCARGADO NOTIFICADO":"MATERIAL INICIAL CONFIRMADO";
+      confirmBtn.disabled=true;
+
+      const saleBtn=document.getElementById("saleBtn");
+      saleBtn.disabled=false;
+      saleBtn.onclick=()=>showTab("sales");
+      updateSalesAvailability();
+      document.getElementById("salesHelper").textContent=hasToolIssues()
+        ?"Ventas habilitadas. Los faltantes iniciales ya fueron informados."
+        :"Las ventas están habilitadas. El funcionamiento se confirmará durante la jornada o al cierre.";
+
+      document.querySelectorAll(".tool-options button").forEach(btn=>btn.disabled=true);
+      document.querySelectorAll("[data-tool-detail]").forEach(area=>area.disabled=true);
+    }
+
+    function hydrateActiveState(){
+      const active=JSON.parse(localStorage.getItem("wbaActiveShiftV7")||"{}");
+      state.toolChecks=active.toolChecks||{};
+      state.toolsConfirmed=Boolean(active.toolsConfirmed);
+      state.incidents=Array.isArray(active.incidents)?active.incidents:[];
+      state.sales=Array.isArray(active.sales)?active.sales:[];
+      state.stock=active.stock||state.stock||{};
+      state.cashOpeningARS=Number.isFinite(Number(active.cashOpeningARS))&&active.cashOpeningARS!==null
+        ?Number(active.cashOpeningARS)
+        :null;
+      state.closure=active.closure||null;
+
+      assignedEquipment.forEach((_,index)=>{
+        const saved=state.toolChecks[index];
+        if(!saved)return;
+
+        const selected=document.querySelector(`[data-tool-index="${index}"][data-status="${saved.status}"]`);
+        if(selected){
+          selected.classList.add(
+            saved.status==="ok"?"selected-ok":"selected-missing"
+          );
+        }
+
+        const label=document.getElementById(`toolLabel-${index}`);
+        label.className="tool-status-label "+saved.status;
+        label.textContent=saved.status==="ok"?"Recibido":"Faltante";
+
+        if(saved.status!=="ok"){
+          document.getElementById(`toolDetail-${index}`).classList.remove("hidden");
+          const area=document.querySelector(`[data-tool-detail="${index}"]`);
+          area.value=saved.detail||"";
+        }
+      });
+
+      updateToolGate();
+      if(state.toolsConfirmed)applyToolsConfirmedUI();
+      renderIncidentHistory();
+      renderSales();
+      updateSalesAvailability();
+      updateClosureAvailability();
+      if(state.closure)applyClosureStatusUI();
+    }
+
+    let timerInterval;
+    function startTimer(){
+      clearInterval(timerInterval);
+      const active=JSON.parse(localStorage.getItem("wbaActiveShiftV7")||"{}");
+      if(!active.start)return;
+      const start=new Date(active.start);
+      const closedAt=active.closure?.closedAt?new Date(active.closure.closedAt):null;
+
+      const update=()=>{
+        const endpoint=closedAt?closedAt.getTime():Date.now();
+        const diff=Math.max(0,endpoint-start.getTime());
+        const h=String(Math.floor(diff/3600000)).padStart(2,"0");
+        const m=String(Math.floor((diff%3600000)/60000)).padStart(2,"0");
+        const s=String(Math.floor((diff%60000)/1000)).padStart(2,"0");
+        document.getElementById("elapsedTimer").textContent=`${h}:${m}:${s}`;
+      };
+      update();
+      if(!closedAt)timerInterval=setInterval(update,1000);
+    }
+
+    function showTab(tab){
+      const home=tab==="home";
+      const sales=tab==="sales";
+      const closure=tab==="closure";
+      const incidents=tab==="incidents";
+
+      document.getElementById("homePane").classList.toggle("active",home);
+      document.getElementById("salesPane").classList.toggle("active",sales);
+      document.getElementById("closurePane").classList.toggle("active",closure);
+      document.getElementById("incidentsPane").classList.toggle("active",incidents);
+
+      document.getElementById("homeTabBtn").classList.toggle("active",home);
+      document.getElementById("salesTabBtn").classList.toggle("active",sales);
+      document.getElementById("closureTabBtn").classList.toggle("active",closure);
+      document.getElementById("incidentsTabBtn").classList.toggle("active",incidents);
+
+      if(sales)updateSalesAvailability();
+      if(closure)updateClosureAvailability();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    document.getElementById("homeTabBtn").addEventListener("click",()=>showTab("home"));
+    document.getElementById("salesTabBtn").addEventListener("click",()=>showTab("sales"));
+    document.getElementById("closureTabBtn").addEventListener("click",()=>showTab("closure"));
+    document.getElementById("incidentsTabBtn").addEventListener("click",()=>showTab("incidents"));
+    document.getElementById("goIncidentBtn").addEventListener("click",()=>showTab("incidents"));
+    document.getElementById("returnToCheckBtn").addEventListener("click",()=>showTab("home"));
+    document.getElementById("goSalesFromClosureBtn").addEventListener("click",()=>showTab("sales"));
+    document.getElementById("goClosureFromSalesBtn").addEventListener("click",()=>showTab("closure"));
+    document.getElementById("backToLiquidationBtn").addEventListener("click",()=>showTab("sales"));
+
+    const demoProduct={
+      id:"PHOTO-001",
+      name:"Foto Souvenir",
+      listPrices:{ARS:18000,BRL:50,USD:12},
+      fixedRatesARS:{ARS:1,BRL:300,USD:1500}
+    };
+
+    const otherCurrencyNames={
+      EUR:"Euros",
+      CLP:"Pesos chilenos",
+      UYU:"Pesos uruguayos",
+      PEN:"Soles peruanos",
+      MXN:"Pesos mexicanos"
+    };
+
+    const minimumARSByPayment={
+      cash:15000,
+      transfer:15000,
+      card:16000
+    };
+
+    const paymentIcons={cash:"💵",transfer:"📲",card:"💳"};
+    const objectiveUnits=20;
+    const photographerCommissionRate=.15;
+
+    const saleDraft={
+      quantity:1,
+      currencyGroup:"ARS",
+      currency:"ARS",
+      exchangeRateARS:1,
+      payment:"",
+      unitPrice:18000,
+      cashReceivedManuallyEdited:false
+    };
+
+    let commissionMethod="";
+    const closureStockActual={};
+    const closureStockTouched={};
+    let closureVoligomaUsed=null;
+    let finalMaterialStatus="";
+    let finalPointStatus="";
+
+    function money(currency,amount){
+      const locales={
+        ARS:"es-AR",BRL:"pt-BR",USD:"en-US",EUR:"de-DE",
+        CLP:"es-CL",UYU:"es-UY",PEN:"es-PE",MXN:"es-MX"
+      };
+      try{
+        return new Intl.NumberFormat(locales[currency]||"es-AR",{
+          style:"currency",
+          currency,
+          minimumFractionDigits:0,
+          maximumFractionDigits:2
+        }).format(Number(amount)||0);
+      }catch(error){
+        return `${currency} ${Number(amount||0).toLocaleString("es-AR",{maximumFractionDigits:2})}`;
+      }
+    }
+
+    function numberValue(value){
+      const parsed=Number(value);
+      return Number.isFinite(parsed)?parsed:0;
+    }
+
+    function roundPrice(value){
+      return Math.round(numberValue(value)*100)/100;
+    }
+
+    function paymentLabel(payment){
+      return payment==="cash"?"Efectivo":payment==="transfer"?"Transferencia":payment==="card"?"Tarjeta":"Pendiente";
+    }
+
+    function currencyName(currency){
+      const names={ARS:"Pesos argentinos",BRL:"Reales",USD:"Dólares",...otherCurrencyNames};
+      return names[currency]||currency;
+    }
+
+    function currentExchangeRate(){
+      return numberValue(saleDraft.exchangeRateARS);
+    }
+
+    function currentListUnitPrice(){
+      if(saleDraft.currencyGroup==="OTHER"){
+        const rate=currentExchangeRate();
+        return rate>0?18000/rate:0;
+      }
+      return demoProduct.listPrices[saleDraft.currency]||0;
+    }
+
+    function currentMinimumARS(){
+      return minimumARSByPayment[saleDraft.payment]||0;
+    }
+
+    function minimumInSelectedCurrency(){
+      const rate=currentExchangeRate();
+      return rate>0?currentMinimumARS()/rate:0;
+    }
+
+    function saleUnitPrice(){
+      return numberValue(saleDraft.unitPrice);
+    }
+
+    function saleTotal(){
+      return saleUnitPrice()*saleDraft.quantity;
+    }
+
+    function equivalentARSPerUnit(){
+      return saleUnitPrice()*currentExchangeRate();
+    }
+
+    function saleTotalARS(){
+      return saleTotal()*currentExchangeRate();
+    }
+
+    function discountPerUnit(){
+      return Math.max(0,currentListUnitPrice()-saleUnitPrice());
+    }
+
+    function discountPercent(){
+      const list=currentListUnitPrice();
+      return list>0?discountPerUnit()/list*100:0;
+    }
+
+    function computeCashSettlement(){
+      const settlement={
+        openingARS:numberValue(state.cashOpeningARS),
+        cashSalesARS:0,
+        foreignChangeARS:0,
+        physicalARS:0,
+        businessNetARS:0,
+        foreign:{},
+        cashSalesEquivalentARS:0
+      };
+
+      state.sales.forEach(sale=>{
+        if(sale.payment!=="cash")return;
+
+        const currency=sale.currency;
+        const saleAmount=numberValue(sale.total);
+        const received=numberValue(sale.paymentDetail?.received);
+        const rate=numberValue(sale.exchangeRateARS);
+        settlement.cashSalesEquivalentARS+=saleAmount*rate;
+
+        if(currency==="ARS"){
+          settlement.cashSalesARS+=saleAmount;
+          return;
+        }
+
+        if(!settlement.foreign[currency]){
+          settlement.foreign[currency]={
+            saleAmount:0,
+            received:0,
+            extraReceived:0,
+            changeARS:0,
+            saleEquivalentARS:0,
+            transactions:0
+          };
+        }
+
+        const item=settlement.foreign[currency];
+        item.saleAmount+=saleAmount;
+        item.received+=received;
+        item.extraReceived+=Math.max(0,received-saleAmount);
+        item.changeARS+=numberValue(sale.paymentDetail?.changeARS);
+        item.saleEquivalentARS+=saleAmount*rate;
+        item.transactions+=1;
+        settlement.foreignChangeARS+=numberValue(sale.paymentDetail?.changeARS);
+      });
+
+      settlement.businessNetARS=settlement.cashSalesARS-settlement.foreignChangeARS;
+      settlement.physicalARS=settlement.openingARS+settlement.businessNetARS;
+      settlement.personalCashAvailable=Math.min(settlement.openingARS,Math.max(0,settlement.physicalARS));
+      settlement.reimbursementBeforeCommission=Math.max(0,settlement.openingARS-settlement.physicalARS);
+      return settlement;
+    }
+
+    function currentCashARS(){
+      return computeCashSettlement().physicalARS;
+    }
+
+    function foreignCashBalances(){
+      const balances={};
+      Object.entries(computeCashSettlement().foreign).forEach(([currency,item])=>{
+        balances[currency]=item.received;
+      });
+      return balances;
+    }
+
+    function computeSalesMetrics(){
+      const metrics={
+        transactions:state.sales.length,
+        units:0,
+        totalARS:0,
+        listTotalARS:0,
+        discountARS:0,
+        discountImpactPercent:0,
+        currencies:{},
+        payments:{
+          cash:{transactions:0,units:0,totalARS:0,currencies:{}},
+          transfer:{transactions:0,units:0,totalARS:0,currencies:{}},
+          card:{transactions:0,units:0,totalARS:0,currencies:{}}
+        }
+      };
+
+      state.sales.forEach(sale=>{
+        const quantity=numberValue(sale.quantity);
+        const rate=numberValue(sale.exchangeRateARS);
+        const total=numberValue(sale.total);
+        const totalARS=total*rate;
+        const listARS=numberValue(sale.listUnitPrice)*quantity*rate;
+        const discountARS=Math.max(0,listARS-totalARS);
+        const currency=sale.currency;
+        const payment=sale.payment;
+
+        metrics.units+=quantity;
+        metrics.totalARS+=totalARS;
+        metrics.listTotalARS+=listARS;
+        metrics.discountARS+=discountARS;
+
+        if(!metrics.currencies[currency]){
+          metrics.currencies[currency]={amount:0,equivalentARS:0,transactions:0};
+        }
+        metrics.currencies[currency].amount+=total;
+        metrics.currencies[currency].equivalentARS+=totalARS;
+        metrics.currencies[currency].transactions+=1;
+
+        if(metrics.payments[payment]){
+          const item=metrics.payments[payment];
+          item.transactions+=1;
+          item.units+=quantity;
+          item.totalARS+=totalARS;
+          item.currencies[currency]=(item.currencies[currency]||0)+total;
+        }
+      });
+
+      metrics.discountImpactPercent=metrics.listTotalARS>0
+        ?metrics.discountARS/metrics.listTotalARS*100
+        :0;
+
+      return metrics;
+    }
+
+    function cashChangeARS(){
+      if(saleDraft.payment!=="cash")return 0;
+      const received=numberValue(document.getElementById("cashReceived").value);
+      const total=saleTotal();
+      if(received<total)return 0;
+
+      if(saleDraft.currency==="ARS")return received-total;
+      return(received-total)*currentExchangeRate();
+    }
+
+    function syncCashReceived(force=false){
+      if(saleDraft.payment!=="cash"||!currencyReady()||saleTotal()<=0)return;
+      if(force||!saleDraft.cashReceivedManuallyEdited){
+        document.getElementById("cashReceived").value=roundPrice(saleTotal());
+        saleDraft.cashReceivedManuallyEdited=false;
+      }
+    }
+
+    function updateSalesAvailability(){
+      const toolsEnabled=Boolean(state.toolsConfirmed);
+      const cashOpened=state.cashOpeningARS!==null;
+      const closed=Boolean(state.closure);
+
+      document.getElementById("salesLockedNotice").classList.toggle("hidden",toolsEnabled);
+      document.getElementById("salesEnabledContent").classList.toggle("hidden",!toolsEnabled);
+
+      if(toolsEnabled){
+        document.getElementById("openingCashCard").classList.toggle("hidden",cashOpened);
+        document.getElementById("salesWorkspace").classList.toggle("hidden",!cashOpened);
+      }
+
+      if(cashOpened){
+        document.getElementById("salesClosedNotice").classList.toggle("hidden",!closed);
+        document.getElementById("salesFormCard").classList.toggle("hidden",closed);
+      }
+
+      renderSales();
+      updateSaleForm();
+      updateClosureAvailability();
+    }
+
+    document.getElementById("openingCashInput").addEventListener("input",()=>{
+      const raw=document.getElementById("openingCashInput").value.trim();
+      const value=Number(raw);
+      document.getElementById("openCashBtn").disabled=!(raw!==""&&Number.isFinite(value)&&value>=0);
+    });
+
+    document.getElementById("openCashBtn").addEventListener("click",()=>{
+      const value=Number(document.getElementById("openingCashInput").value);
+      if(!Number.isFinite(value)||value<0)return;
+
+      state.cashOpeningARS=value;
+      const active=JSON.parse(localStorage.getItem("wbaActiveShiftV7")||"{}");
+      active.cashOpeningARS=value;
+      active.sales=state.sales;
+      localStorage.setItem("wbaActiveShiftV7",JSON.stringify(active));
+
+      updateSalesAvailability();
+      document.getElementById("salesWorkspace").scrollIntoView({behavior:"smooth",block:"start"});
+    });
+
+    document.getElementById("decreaseQty").addEventListener("click",()=>{
+      saleDraft.quantity=Math.max(1,saleDraft.quantity-1);
+      syncCashReceived(true);
+      updateSaleForm();
+    });
+
+    document.getElementById("increaseQty").addEventListener("click",()=>{
+      saleDraft.quantity=Math.min(20,saleDraft.quantity+1);
+      syncCashReceived(true);
+      updateSaleForm();
+    });
+
+    document.querySelectorAll("[data-payment]").forEach(button=>{
+      button.addEventListener("click",()=>{
+        saleDraft.payment=button.dataset.payment;
+        saleDraft.cashReceivedManuallyEdited=false;
+        if(saleDraft.payment==="cash")syncCashReceived(true);
+        updateSaleForm();
+      });
+    });
+
+    document.querySelectorAll("[data-currency-group]").forEach(button=>{
+      button.addEventListener("click",()=>{
+        saleDraft.currencyGroup=button.dataset.currencyGroup;
+
+        if(saleDraft.currencyGroup==="OTHER"){
+          saleDraft.currency=document.getElementById("otherCurrencySelect").value||"";
+          saleDraft.exchangeRateARS=numberValue(document.getElementById("manualExchangeRate").value);
+          saleDraft.unitPrice=currentListUnitPrice();
+        }else{
+          saleDraft.currency=saleDraft.currencyGroup;
+          saleDraft.exchangeRateARS=demoProduct.fixedRatesARS[saleDraft.currency];
+          saleDraft.unitPrice=demoProduct.listPrices[saleDraft.currency];
+        }
+
+        saleDraft.cashReceivedManuallyEdited=false;
+        document.getElementById("editableUnitPrice").value=saleDraft.unitPrice||"";
+        syncCashReceived(true);
+        updateSaleForm();
+      });
+    });
+
+    document.getElementById("otherCurrencySelect").addEventListener("change",()=>{
+      saleDraft.currency=document.getElementById("otherCurrencySelect").value;
+      saleDraft.exchangeRateARS=numberValue(document.getElementById("manualExchangeRate").value);
+      saleDraft.unitPrice=currentListUnitPrice();
+      saleDraft.cashReceivedManuallyEdited=false;
+      document.getElementById("editableUnitPrice").value=saleDraft.unitPrice?roundPrice(saleDraft.unitPrice):"";
+      syncCashReceived(true);
+      updateSaleForm();
+    });
+
+    document.getElementById("manualExchangeRate").addEventListener("input",()=>{
+      saleDraft.exchangeRateARS=numberValue(document.getElementById("manualExchangeRate").value);
+      saleDraft.unitPrice=currentListUnitPrice();
+      saleDraft.cashReceivedManuallyEdited=false;
+      document.getElementById("editableUnitPrice").value=saleDraft.unitPrice?roundPrice(saleDraft.unitPrice):"";
+      syncCashReceived(true);
+      updateSaleForm();
+    });
+
+    document.getElementById("editableUnitPrice").addEventListener("input",()=>{
+      saleDraft.unitPrice=numberValue(document.getElementById("editableUnitPrice").value);
+      saleDraft.cashReceivedManuallyEdited=false;
+      syncCashReceived(true);
+      updateSaleForm();
+    });
+
+    document.getElementById("cashReceived").addEventListener("input",()=>{
+      saleDraft.cashReceivedManuallyEdited=true;
+      updateSaleForm();
+    });
+
+    function currencyReady(){
+      if(saleDraft.currencyGroup!=="OTHER")return true;
+      return Boolean(saleDraft.currency)&&currentExchangeRate()>0;
+    }
+
+    function priceValid(){
+      if(!saleDraft.payment||!currencyReady()||saleUnitPrice()<=0)return false;
+      return equivalentARSPerUnit()+0.0001>=currentMinimumARS();
+    }
+
+    function cashPaymentValid(){
+      if(saleDraft.payment!=="cash")return true;
+
+      const received=numberValue(document.getElementById("cashReceived").value);
+      if(received<saleTotal())return false;
+
+      if(saleDraft.currency!=="ARS"&&cashChangeARS()>currentCashARS()+0.0001)return false;
+      return true;
+    }
+
+    function paymentDataValid(){
+      if(!saleDraft.payment)return false;
+      if(saleDraft.payment==="cash")return cashPaymentValid();
+      return true;
+    }
+
+    function updateSaleForm(){
+      const listPrice=currentListUnitPrice();
+      const total=saleTotal();
+      const minimumSelected=minimumInSelectedCurrency();
+      const isForeign=saleDraft.currency&&saleDraft.currency!=="ARS";
+      const received=numberValue(document.getElementById("cashReceived").value);
+      const changeARS=cashChangeARS();
+
+      document.getElementById("quantityValue").textContent=saleDraft.quantity;
+      document.getElementById("summaryProduct").textContent=`${saleDraft.quantity} × ${demoProduct.name}`;
+      document.getElementById("summaryPayment").textContent=paymentLabel(saleDraft.payment);
+      document.getElementById("summaryUnitPrice").textContent=saleDraft.currency&&saleUnitPrice()>0
+        ?money(saleDraft.currency,saleUnitPrice())
+        :"—";
+      document.getElementById("summaryTotal").textContent=saleDraft.currency&&total>0
+        ?money(saleDraft.currency,total)
+        :"—";
+      document.getElementById("summaryARSEquivalent").textContent=currencyReady()&&total>0
+        ?money("ARS",saleTotalARS())
+        :"—";
+
+      const totalDiscount=discountPerUnit()*saleDraft.quantity;
+      document.getElementById("summaryDiscount").textContent=totalDiscount>0&&saleDraft.currency
+        ?money(saleDraft.currency,totalDiscount)
+        :"Sin descuento";
+
+      document.querySelectorAll("[data-payment]").forEach(button=>{
+        button.classList.toggle("selected",button.dataset.payment===saleDraft.payment);
+      });
+
+      document.querySelectorAll("[data-currency-group]").forEach(button=>{
+        button.classList.toggle("selected",button.dataset.currencyGroup===saleDraft.currencyGroup);
+      });
+
+      document.getElementById("otherCurrencyPanel").classList.toggle("hidden",saleDraft.currencyGroup!=="OTHER");
+      document.getElementById("cashPanel").classList.toggle("hidden",saleDraft.payment!=="cash");
+      document.getElementById("digitalPaymentPanel").classList.toggle(
+        "hidden",
+        !(saleDraft.payment==="transfer"||saleDraft.payment==="card")
+      );
+      document.getElementById("digitalPaymentTitle").textContent=saleDraft.payment==="card"
+        ?"Cobro por tarjeta"
+        :"Cobro por transferencia";
+
+      document.getElementById("listUnitPrice").textContent=currencyReady()&&listPrice>0
+        ?money(saleDraft.currency,listPrice)
+        :"Ingresá la moneda y el tipo de cambio";
+
+      document.getElementById("editableCurrencyPrefix").textContent=saleDraft.currency||"—";
+
+      if(document.activeElement!==document.getElementById("editableUnitPrice")){
+        document.getElementById("editableUnitPrice").value=saleUnitPrice()>0?roundPrice(saleUnitPrice()):"";
+      }
+
+      const minimumBox=document.getElementById("minimumPriceBox");
+      if(!saleDraft.payment){
+        minimumBox.className="minimum-price-box";
+        document.getElementById("minimumPriceLabel").textContent="Seleccioná el medio de pago";
+        document.getElementById("minimumEquivalentLabel").textContent="—";
+      }else if(!currencyReady()){
+        minimumBox.className="minimum-price-box";
+        document.getElementById("minimumPriceLabel").textContent=money("ARS",currentMinimumARS());
+        document.getElementById("minimumEquivalentLabel").textContent="Falta tipo de cambio";
+      }else{
+        minimumBox.className="minimum-price-box "+(priceValid()?"valid":"invalid");
+        document.getElementById("minimumPriceLabel").textContent=`${paymentLabel(saleDraft.payment)}: ${money("ARS",currentMinimumARS())}`;
+        document.getElementById("minimumEquivalentLabel").textContent=`Equivale a ${money(saleDraft.currency,minimumSelected)} por unidad`;
+      }
+
+      const priceError=document.getElementById("priceValidationError");
+      if(saleDraft.payment&&currencyReady()&&saleUnitPrice()>0&&!priceValid()){
+        priceError.textContent=`El valor ingresado equivale a ${money("ARS",equivalentARSPerUnit())} por unidad y está por debajo del mínimo autorizado.`;
+        priceError.classList.remove("hidden");
+      }else{
+        priceError.classList.add("hidden");
+      }
+
+      document.getElementById("discountAmount").textContent=currencyReady()&&saleDraft.currency
+        ?(discountPerUnit()>0?money(saleDraft.currency,discountPerUnit()):"Sin descuento")
+        :"—";
+      document.getElementById("discountPercent").textContent=currencyReady()
+        ?`${discountPercent().toLocaleString("es-AR",{maximumFractionDigits:2})}%`
+        :"—";
+      document.getElementById("arsEquivalentPrice").textContent=currencyReady()&&saleUnitPrice()>0
+        ?money("ARS",equivalentARSPerUnit())
+        :"—";
+
+      document.getElementById("receivedCurrencyLabel").textContent=saleDraft.currency
+        ?`${currencyName(saleDraft.currency)} (${saleDraft.currency})`
+        :"la moneda seleccionada";
+      document.getElementById("foreignChangeInfo").classList.toggle(
+        "hidden",
+        !(saleDraft.payment==="cash"&&isForeign)
+      );
+
+      const changeLabel=document.getElementById("changeLabel");
+      const cashChange=document.getElementById("cashChange");
+      const cashError=document.getElementById("cashError");
+      const cashAfterBox=document.getElementById("cashAfterChangeBox");
+      const summaryForeignRow=document.getElementById("summaryForeignChangeRow");
+
+      if(saleDraft.payment==="cash"){
+        if(!saleDraft.cashReceivedManuallyEdited)syncCashReceived();
+        const updatedReceived=numberValue(document.getElementById("cashReceived").value);
+
+        if(isForeign){
+          changeLabel.textContent="Vuelto a entregar en pesos";
+          cashChange.textContent=updatedReceived>=total?money("ARS",changeARS):"—";
+          cashAfterBox.classList.remove("hidden");
+          document.getElementById("cashAfterChange").textContent=money("ARS",currentCashARS()-changeARS);
+          summaryForeignRow.classList.remove("hidden");
+          document.getElementById("summaryForeignChange").textContent=money("ARS",changeARS);
+        }else{
+          changeLabel.textContent="Vuelto a entregar";
+          cashChange.textContent=updatedReceived>=total?money("ARS",updatedReceived-total):"—";
+          cashAfterBox.classList.add("hidden");
+          summaryForeignRow.classList.add("hidden");
+        }
+
+        if(updatedReceived<total){
+          cashError.textContent="El importe recibido es menor al total de la venta.";
+          cashError.classList.remove("hidden");
+        }else if(isForeign&&changeARS>currentCashARS()+0.0001){
+          cashError.textContent=`No hay suficientes pesos en caja para entregar ${money("ARS",changeARS)} de vuelto.`;
+          cashError.classList.remove("hidden");
+        }else{
+          cashError.classList.add("hidden");
+        }
+      }else{
+        cashError.classList.add("hidden");
+        summaryForeignRow.classList.add("hidden");
+      }
+
+      const valid=state.toolsConfirmed&&state.cashOpeningARS!==null&&!state.closure&&
+        currencyReady()&&priceValid()&&paymentDataValid();
+
+      document.getElementById("registerSaleBtn").disabled=!valid;
+    }
+
+    function buildPaymentDetail(){
+      if(saleDraft.payment==="cash"){
+        return{
+          received:numberValue(document.getElementById("cashReceived").value),
+          changeARS:cashChangeARS(),
+          changeCurrency:"ARS"
+        };
+      }
+      return{methodOnly:true};
+    }
+
+    function resetSaleDraft(){
+      saleDraft.quantity=1;
+      saleDraft.currencyGroup="ARS";
+      saleDraft.currency="ARS";
+      saleDraft.exchangeRateARS=1;
+      saleDraft.payment="";
+      saleDraft.unitPrice=18000;
+      saleDraft.cashReceivedManuallyEdited=false;
+
+      document.getElementById("otherCurrencySelect").value="";
+      document.getElementById("manualExchangeRate").value="";
+      document.getElementById("editableUnitPrice").value="18000";
+      document.getElementById("cashReceived").value="";
+      updateSaleForm();
+    }
+
+    document.getElementById("registerSaleBtn").addEventListener("click",()=>{
+      if(state.closure||!(currencyReady()&&priceValid()&&paymentDataValid()))return;
+
+      const sale={
+        id:`V-${String(Date.now()).slice(-6)}`,
+        time:formatTime(new Date()),
+        productId:demoProduct.id,
+        productName:demoProduct.name,
+        quantity:saleDraft.quantity,
+        currency:saleDraft.currency,
+        exchangeRateARS:currentExchangeRate(),
+        listUnitPrice:currentListUnitPrice(),
+        unitPrice:saleUnitPrice(),
+        arsEquivalentUnitPrice:equivalentARSPerUnit(),
+        discountPerUnit:discountPerUnit(),
+        discountPercent:discountPercent(),
+        total:saleTotal(),
+        totalARS:saleTotalARS(),
+        payment:saleDraft.payment,
+        paymentDetail:buildPaymentDetail()
+      };
+
+      state.sales.push(sale);
+      const active=JSON.parse(localStorage.getItem("wbaActiveShiftV7")||"{}");
+      active.sales=state.sales;
+      active.cashOpeningARS=state.cashOpeningARS;
+      localStorage.setItem("wbaActiveShiftV7",JSON.stringify(active));
+
+      const changeText=sale.payment==="cash"&&sale.currency!=="ARS"&&sale.paymentDetail.changeARS>0
+        ?` · Vuelto ${money("ARS",sale.paymentDetail.changeARS)}`
+        :"";
+
+      document.getElementById("saleSuccess").innerHTML=`
+        <strong>✓ Venta ${sale.id} registrada correctamente</strong>
+        ${sale.quantity} ${sale.quantity===1?"unidad":"unidades"} · ${money(sale.currency,sale.total)} · Equivalente ${money("ARS",sale.totalARS)} · ${paymentLabel(sale.payment)}${changeText} · ${sale.time} hs
+      `;
+      document.getElementById("saleSuccess").classList.remove("hidden");
+
+      renderSales();
+      renderClosurePreview();
+      resetSaleDraft();
+      document.getElementById("saleSuccess").scrollIntoView({behavior:"smooth",block:"center"});
+    });
+
+    function renderCurrencyCards(containerId,values,emptyText){
+      const container=document.getElementById(containerId);
+      const entries=Object.entries(values).filter(([,value])=>{
+        const amount=typeof value==="object"?value.amount:value;
+        return Math.abs(numberValue(amount))>0.0001;
+      });
+
+      if(entries.length===0){
+        container.innerHTML=`<div class="history-empty" style="grid-column:1/-1">${emptyText}</div>`;
+        return;
+      }
+
+      container.innerHTML=entries.map(([currency,value])=>{
+        const amount=typeof value==="object"?value.amount:value;
+        const equivalentARS=typeof value==="object"?value.equivalentARS:null;
+        return`
+          <div class="currency-summary-card">
+            <span>${currency}</span>
+            <strong>${money(currency,amount)}</strong>
+            ${equivalentARS!==null?`<small>Equiv. ${money("ARS",equivalentARS)}</small>`:""}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function paymentBreakdownHTML(metrics){
+      return["cash","transfer","card"].map(method=>{
+        const item=metrics.payments[method];
+        const currencyLines=Object.entries(item.currencies);
+        return`
+          <div class="payment-breakdown-card">
+            <span>${paymentIcons[method]}</span>
+            <strong>${paymentLabel(method)} · ${item.transactions} ${item.transactions===1?"venta":"ventas"}</strong>
+            <small>${item.units} ${item.units===1?"producto":"productos"} · Equiv. ${money("ARS",item.totalARS)}</small>
+            <div class="payment-breakdown-detail">
+              ${currencyLines.length
+                ?currencyLines.map(([currency,amount])=>`<div><span>${currency}</span><b>${money(currency,amount)}</b></div>`).join("")
+                :'<div><span>Sin operaciones</span><b>—</b></div>'}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function goalMessage(units){
+      if(units<objectiveUnits){
+        const missing=objectiveUnits-units;
+        return`Faltan ${missing} ${missing===1?"producto":"productos"} para alcanzar el objetivo.`;
+      }
+      if(units===objectiveUnits)return"¡Felicitaciones! Alcanzaste el objetivo mínimo del día.";
+      return`¡Felicitaciones! Superaste el objetivo por ${units-objectiveUnits} productos.`;
+    }
+
+    function renderSales(){
+      const metrics=computeSalesMetrics();
+      const cashForeign=foreignCashBalances();
+      const cashBalances={ARS:currentCashARS(),...cashForeign};
+
+      document.getElementById("salesUnitsMetric").textContent=metrics.units;
+      document.getElementById("salesTransactionsMetric").textContent=metrics.transactions;
+      document.getElementById("salesStatusChip").textContent=`${metrics.transactions} ${metrics.transactions===1?"operación":"operaciones"}`;
+      document.getElementById("openingCashMetric").textContent=money("ARS",numberValue(state.cashOpeningARS));
+      document.getElementById("currentCashARSMetric").textContent=money("ARS",currentCashARS());
+      document.getElementById("totalSalesARSMetric").textContent=money("ARS",metrics.totalARS);
+      document.getElementById("totalDiscountARSMetric").textContent=money("ARS",metrics.discountARS);
+      document.getElementById("discountImpactMetric").textContent=
+        `${metrics.discountImpactPercent.toLocaleString("es-AR",{maximumFractionDigits:2})}% sobre precio de lista`;
+
+      document.getElementById("paymentBreakdown").innerHTML=paymentBreakdownHTML(metrics);
+      renderCurrencyCards("currencyTotals",metrics.currencies,"Todavía no hay ventas cobradas.");
+      renderCurrencyCards("cashBalances",cashBalances,"Todavía no hay efectivo declarado.");
+
+      const achieved=metrics.units>=objectiveUnits;
+      document.getElementById("goalCard").classList.toggle("achieved",achieved);
+      document.getElementById("goalMessage").textContent=goalMessage(metrics.units);
+      document.getElementById("goalCounter").textContent=`${metrics.units} / ${objectiveUnits}`;
+      document.getElementById("goalProgressFill").style.width=`${Math.min(100,metrics.units/objectiveUnits*100)}%`;
+
+      document.getElementById("heroSalesCount").textContent=`${metrics.units} / ${objectiveUnits}`;
+      document.getElementById("heroProgressFill").style.width=`${Math.min(100,metrics.units/objectiveUnits*100)}%`;
+
+      const badge=document.getElementById("salesBadge");
+      badge.textContent=metrics.units;
+      badge.classList.toggle("hidden",metrics.units===0);
+
+      const history=document.getElementById("salesHistory");
+      if(metrics.transactions===0){
+        history.innerHTML='<div class="history-empty">Todavía no se registraron ventas.</div>';
+      }else{
+        history.innerHTML=[...state.sales].reverse().map(sale=>{
+          const discount=numberValue(sale.discountPerUnit)>0
+            ?` · Descuento ${numberValue(sale.discountPercent).toLocaleString("es-AR",{maximumFractionDigits:2})}%`
+            :"";
+          const change=sale.payment==="cash"&&sale.currency!=="ARS"&&numberValue(sale.paymentDetail?.changeARS)>0
+            ?` · Vuelto ${money("ARS",sale.paymentDetail.changeARS)}`
+            :"";
+          return`
+            <div class="sale-history-item">
+              <div>
+                <strong>${sale.id} · ${sale.quantity} × ${sale.productName}</strong>
+                <span>${sale.time} hs · ${paymentLabel(sale.payment)} · Unitario ${money(sale.currency,sale.unitPrice)}${discount}${change}</span>
+                <span>Equivalente total ${money("ARS",numberValue(sale.total)*numberValue(sale.exchangeRateARS))} · TC ${money("ARS",sale.exchangeRateARS)} por ${sale.currency}</span>
+              </div>
+              <div class="sale-history-total">
+                <strong>${money(sale.currency,sale.total)}</strong>
+                <span>${sale.currency}</span>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      renderClosurePreview();
+    }
+
+    function stockConsumptionPerUnit(index){
+      if(index===0)return 1; // Portarretratos
+      if(index===1)return 1; // Stickers
+      if(index===2)return 2; // Hojas
+      return 0;              // Voligoma: consumo manual al cierre
+    }
+
+    function receivedStock(index){
+      const value=state.stock?.[index];
+      return Number.isFinite(Number(value))?Number(value):numberValue(stockPreset[index]?.expected);
+    }
+
+    function stockConsumed(index,units=computeSalesMetrics().units){
+      if(index===3)return Number.isFinite(Number(closureVoligomaUsed))?Number(closureVoligomaUsed):0;
+      return units*stockConsumptionPerUnit(index);
+    }
+
+    function expectedStockReturn(index,units=computeSalesMetrics().units){
+      return Math.max(0,receivedStock(index)-stockConsumed(index,units));
+    }
+
+    function renderClosureStockTable(){
+      const metrics=computeSalesMetrics();
+      const table=document.getElementById("closureStockTable");
+
+      table.innerHTML=`
+        <div class="closure-stock-row header">
+          <div>Material</div><div>Inicial</div><div>Utilizado</div><div>Teórico</div><div>Devuelto</div>
+        </div>
+        ${stockPreset.map((item,index)=>{
+          const initial=receivedStock(index);
+          const consumption=stockConsumed(index,metrics.units);
+          const theoretical=expectedStockReturn(index,metrics.units);
+          if(!closureStockTouched[index]){
+            closureStockActual[index]=theoretical;
+          }
+          const usedCell=index===3
+            ?`<input type="number" min="0" max="${initial}" step="1" data-voligoma-used value="${closureVoligomaUsed===null?"":closureVoligomaUsed}" placeholder="Usadas">`
+            :`${consumption}`;
+          return`
+            <div class="closure-stock-row">
+              <div class="closure-stock-name">${item.name}</div>
+              <div class="closure-stock-cell">${initial}</div>
+              <div class="closure-stock-cell">${usedCell}</div>
+              <div class="closure-stock-cell" id="stockTheoretical-${index}">${theoretical}</div>
+              <div class="closure-stock-cell">
+                <input type="number" min="0" step="1" data-closure-stock="${index}" value="${closureStockActual[index]}">
+                <div id="stockDiff-${index}" style="margin-top:4px"></div>
+              </div>
+            </div>
+          `;
+        }).join("")}
+      `;
+
+      const voligomaInput=table.querySelector("[data-voligoma-used]");
+      if(voligomaInput){
+        voligomaInput.addEventListener("input",()=>{
+          const raw=voligomaInput.value.trim();
+          closureVoligomaUsed=raw===""?null:Number(raw);
+          const theoretical=expectedStockReturn(3,metrics.units);
+          document.getElementById("stockTheoretical-3").textContent=theoretical;
+          if(!closureStockTouched[3]){
+            closureStockActual[3]=theoretical;
+            table.querySelector('[data-closure-stock="3"]').value=theoretical;
+          }
+          updateStockDifference(3);
+          updateClosureValidation();
+        });
+      }
+
+      table.querySelectorAll("[data-closure-stock]").forEach(input=>{
+        input.addEventListener("input",()=>{
+          const index=Number(input.dataset.closureStock);
+          const raw=input.value.trim();
+          closureStockTouched[index]=true;
+          closureStockActual[index]=raw===""?null:Number(raw);
+          updateStockDifference(index);
+          updateClosureValidation();
+        });
+      });
+
+      stockPreset.forEach((_,index)=>updateStockDifference(index));
+    }
+
+    function updateStockDifference(index){
+      const target=document.getElementById(`stockDiff-${index}`);
+      if(!target)return;
+      const actual=closureStockActual[index];
+      const expected=expectedStockReturn(index);
+      if(!Number.isFinite(Number(actual))){
+        target.textContent="Pendiente";
+        target.className="stock-difference-warn";
+        return;
+      }
+      const diff=Number(actual)-expected;
+      target.textContent=diff===0?"Coincide":`${diff>0?"+":""}${diff}`;
+      target.className=diff===0?"stock-difference-ok":"stock-difference-warn";
+    }
+
+    function closureStockComplete(){
+      const voligomaValid=closureVoligomaUsed!==null&&Number.isFinite(Number(closureVoligomaUsed))&&Number(closureVoligomaUsed)>=0&&Number(closureVoligomaUsed)<=receivedStock(3);
+      const returnsValid=stockPreset.every((_,index)=>Number.isFinite(Number(closureStockActual[index]))&&Number(closureStockActual[index])>=0);
+      return voligomaValid&&returnsValid;
+    }
+
+    function finalOperationalComplete(){
+      const materialValid=finalMaterialStatus==="ok"||(
+        finalMaterialStatus==="issue"&&document.getElementById("finalMaterialDetail").value.trim().length>=5
+      );
+      const pointValid=finalPointStatus==="ok"||(
+        finalPointStatus==="issue"&&document.getElementById("finalPointDetail").value.trim().length>=5
+      );
+      return materialValid&&pointValid;
+    }
+
+    function commissionARS(){
+      return computeSalesMetrics().totalARS*photographerCommissionRate;
+    }
+
+    function businessCashBeforeCommission(){
+      return computeCashSettlement().businessNetARS;
+    }
+
+    function netARSAfterCommission(method=commissionMethod){
+      return businessCashBeforeCommission()-(method==="cash"?commissionARS():0);
+    }
+
+    function cashToRenderARS(method=commissionMethod){
+      return Math.max(0,netARSAfterCommission(method));
+    }
+
+    function reimbursementARS(method=commissionMethod){
+      return Math.max(0,-netARSAfterCommission(method));
+    }
+
+    function commissionCashAvailable(){
+      return businessCashBeforeCommission()+0.0001>=commissionARS();
+    }
+
+    function updateClosureAvailability(){
+      const available=Boolean(state.toolsConfirmed)&&state.cashOpeningARS!==null;
+      document.getElementById("closureLockedNotice").classList.toggle("hidden",available);
+      document.getElementById("closureWorkspace").classList.toggle("hidden",!available);
+
+      if(!available)return;
+
+      if(state.closure){
+        document.getElementById("closureForm").classList.add("hidden");
+        document.getElementById("closedLiquidation").classList.remove("hidden");
+        renderClosedLiquidation();
+      }else{
+        document.getElementById("closureForm").classList.remove("hidden");
+        document.getElementById("closedLiquidation").classList.add("hidden");
+        renderClosurePreview();
+      }
+    }
+
+    function cashSettlementCardsHTML(settlement){
+      const cards=[];
+      cards.push(`
+        <div class="cash-settlement-card">
+          <h4>Pesos argentinos (ARS)</h4>
+          <div><span>Ventas en efectivo</span><b>${money("ARS",settlement.cashSalesARS)}</b></div>
+          <div><span>Vueltos por cobros extranjeros</span><b>- ${money("ARS",settlement.foreignChangeARS)}</b></div>
+          <div class="render-total"><span>Negocio antes de comisión</span><b>${money("ARS",settlement.businessNetARS)}</b></div>
+        </div>
+      `);
+
+      Object.entries(settlement.foreign).forEach(([currency,item])=>{
+        cards.push(`
+          <div class="cash-settlement-card">
+            <h4>${currency} - efectivo físico</h4>
+            <div><span>Valor de las ventas</span><b>${money(currency,item.saleAmount)}</b></div>
+            <div><span>Efectivo recibido</span><b>${money(currency,item.received)}</b></div>
+            <div><span>Extra sobre la venta</span><b>${money(currency,item.extraReceived)}</b></div>
+            <div><span>Vuelto entregado en ARS</span><b>${money("ARS",item.changeARS)}</b></div>
+            <div class="render-total"><span>Total a rendir</span><b>${money(currency,item.received)}</b></div>
+          </div>
+        `);
+      });
+
+      return cards.join("");
+    }
+
+    function digitalBreakdownHTML(metrics){
+      return["transfer","card"].map(method=>{
+        const item=metrics.payments[method];
+        const lines=Object.entries(item.currencies);
+        return`
+          <div class="payment-breakdown-card">
+            <span>${paymentIcons[method]}</span>
+            <strong>${paymentLabel(method)} · ${item.transactions} ${item.transactions===1?"operación":"operaciones"}</strong>
+            <small>${item.units} productos · Equiv. ${money("ARS",item.totalARS)}</small>
+            <div class="payment-breakdown-detail">
+              ${lines.length?lines.map(([currency,amount])=>`<div><span>${currency}</span><b>${money(currency,amount)}</b></div>`).join(""):'<div><span>Sin cobros</span><b>—</b></div>'}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function arsWaterfallHTML(method=commissionMethod){
+      const settlement=computeCashSettlement();
+      const commissionCash=method==="cash"?commissionARS():0;
+      const toRender=cashToRenderARS(method);
+      const reimbursement=reimbursementARS(method);
+      const rows=[
+        ["Caja inicial personal declarada",money("ARS",settlement.openingARS),"personal"],
+        ["Ventas cobradas en efectivo ARS",money("ARS",settlement.cashSalesARS),""],
+        ["Vueltos en ARS por cobros extranjeros",`- ${money("ARS",settlement.foreignChangeARS)}`,settlement.foreignChangeARS>0?"negative":""],
+        ["Efectivo ARS físico al cierre",money("ARS",settlement.physicalARS),""],
+        ["Caja personal que corresponde retirar",money("ARS",settlement.openingARS),"personal"],
+        ["Resultado del negocio antes de comisión",money("ARS",settlement.businessNetARS),settlement.businessNetARS<0?"negative":"positive"],
+        ["Comisión descontada en efectivo",`- ${money("ARS",commissionCash)}`,commissionCash>0?"negative":""],
+        ["Total ARS a rendir",money("ARS",toRender),"positive"],
+        ["Reintegro pendiente al fotógrafo",money("ARS",reimbursement),reimbursement>0?"negative":""]
+      ];
+      return rows.map(([label,value,cls])=>`<div class="cash-waterfall-row ${cls}"><span>${label}</span><strong>${value}</strong></div>`).join("");
+    }
+
+    function renderClosurePreview(){
+      if(state.cashOpeningARS===null)return;
+
+      const metrics=computeSalesMetrics();
+      const commission=commissionARS();
+      const achieved=metrics.units>=objectiveUnits;
+
+      document.getElementById("closureTotalSalesARS").textContent=money("ARS",metrics.totalARS);
+      document.getElementById("closureUnits").textContent=metrics.units;
+      document.getElementById("closureDiscountARS").textContent=money("ARS",metrics.discountARS);
+      document.getElementById("closureDiscountPercent").textContent=
+        `${metrics.discountImpactPercent.toLocaleString("es-AR",{maximumFractionDigits:2})}%`;
+
+      const goal=document.getElementById("closureGoalResult");
+      goal.textContent=goalMessage(metrics.units);
+      goal.classList.toggle("achieved",achieved);
+
+      document.getElementById("closurePaymentBreakdown").innerHTML=paymentBreakdownHTML(metrics);
+      renderCurrencyCards("closureCurrencyBreakdown",metrics.currencies,"Todavía no hay ventas.");
+      document.getElementById("commissionAmountChip").textContent=money("ARS",commission);
+      const settlement=computeCashSettlement();
+      document.getElementById("closureARSWaterfall").innerHTML=arsWaterfallHTML();
+      document.getElementById("closureCashByCurrency").innerHTML=cashSettlementCardsHTML(settlement);
+      document.getElementById("closureDigitalByMethod").innerHTML=digitalBreakdownHTML(metrics);
+
+      renderClosureStockTable();
+
+      updateClosureValidation();
+    }
+
+    document.querySelectorAll("[data-commission-method]").forEach(button=>{
+      button.addEventListener("click",()=>{
+        commissionMethod=button.dataset.commissionMethod;
+        document.querySelectorAll("[data-commission-method]").forEach(item=>{
+          item.classList.toggle("selected",item.dataset.commissionMethod===commissionMethod);
+        });
+        document.getElementById("closureARSWaterfall").innerHTML=arsWaterfallHTML();
+        updateClosureValidation();
+      });
+    });
+
+    document.querySelectorAll('input[name="finalMaterialStatus"]').forEach(radio=>{
+      radio.addEventListener("change",()=>{
+        finalMaterialStatus=radio.value;
+        document.getElementById("finalMaterialDetailWrap").classList.toggle("hidden",finalMaterialStatus!=="issue");
+        if(finalMaterialStatus!=="issue")document.getElementById("finalMaterialDetail").value="";
+        updateClosureValidation();
+      });
+    });
+
+    document.querySelectorAll('input[name="finalPointStatus"]').forEach(radio=>{
+      radio.addEventListener("change",()=>{
+        finalPointStatus=radio.value;
+        document.getElementById("finalPointDetailWrap").classList.toggle("hidden",finalPointStatus!=="issue");
+        if(finalPointStatus!=="issue")document.getElementById("finalPointDetail").value="";
+        updateClosureValidation();
+      });
+    });
+
+    document.getElementById("finalMaterialDetail").addEventListener("input",updateClosureValidation);
+    document.getElementById("finalPointDetail").addEventListener("input",updateClosureValidation);
+
+    function updateClosureValidation(){
+      if(state.closure)return;
+
+      const cashWarning=document.getElementById("commissionCashWarning");
+      if(commissionMethod==="cash"&&!commissionCashAvailable()){
+        cashWarning.textContent=`La recaudación en efectivo ARS disponible para el negocio es ${money("ARS",businessCashBeforeCommission())} y no alcanza para descontar una comisión de ${money("ARS",commissionARS())}. Seleccioná transferencia.`;
+        cashWarning.classList.remove("hidden");
+      }else{
+        cashWarning.classList.add("hidden");
+      }
+
+      const valid=Boolean(commissionMethod)&&closureStockComplete()&&finalOperationalComplete()&&
+        !(commissionMethod==="cash"&&!commissionCashAvailable());
+
+      const missing=[];
+      if(!commissionMethod)missing.push("forma de cobro de comisión");
+      if(!closureStockComplete())missing.push("stock devuelto y voligomas utilizadas");
+      if(!finalOperationalComplete())missing.push("estado final del material y del punto");
+      if(commissionMethod==="cash"&&!commissionCashAvailable())missing.push("efectivo insuficiente para comisión");
+
+      document.getElementById("closureRequirements").textContent=valid
+        ?"Todo listo para cerrar y registrar la liquidación."
+        :"Pendiente: "+missing.join(", ")+".";
+      document.getElementById("closeShiftBtn").disabled=!valid;
+    }
+
+    function buildClosureStock(){
+      const metrics=computeSalesMetrics();
+      return stockPreset.map((item,index)=>{
+        const initial=receivedStock(index);
+        const consumed=stockConsumed(index,metrics.units);
+        const theoretical=expectedStockReturn(index,metrics.units);
+        const actual=numberValue(closureStockActual[index]);
+        return{
+          name:item.name,
+          initial,
+          consumed,
+          theoretical,
+          actual,
+          difference:actual-theoretical
+        };
+      });
+    }
+
+    document.getElementById("closeShiftBtn").addEventListener("click",()=>{
+      if(document.getElementById("closeShiftBtn").disabled)return;
+      if(!confirm("¿Confirmás el cierre? Después de generar la liquidación no se podrán registrar nuevas ventas."))return;
+
+      const active=JSON.parse(localStorage.getItem("wbaActiveShiftV7")||"{}");
+      const metrics=computeSalesMetrics();
+
+      state.closure={
+        id:`LIQ-${String(Date.now()).slice(-8)}`,
+        closedAt:new Date().toISOString(),
+        startedAt:active.start||new Date().toISOString(),
+        metrics,
+        commissionRate:photographerCommissionRate,
+        commissionARS:commissionARS(),
+        commissionMethod,
+        openingCashARS:numberValue(state.cashOpeningARS),
+        cashSettlement:computeCashSettlement(),
+        businessCashBeforeCommission:businessCashBeforeCommission(),
+        cashToRenderARS:cashToRenderARS(),
+        reimbursementARS:reimbursementARS(),
+        foreignCash:foreignCashBalances(),
+        stock:buildClosureStock(),
+        operational:{
+          materialStatus:finalMaterialStatus,
+          materialDetail:document.getElementById("finalMaterialDetail").value.trim(),
+          pointStatus:finalPointStatus,
+          pointDetail:document.getElementById("finalPointDetail").value.trim()
+        },
+        observations:document.getElementById("closureObservations").value.trim()
+      };
+
+      active.closure=state.closure;
+      active.sales=state.sales;
+      active.cashOpeningARS=state.cashOpeningARS;
+      localStorage.setItem("wbaActiveShiftV7",JSON.stringify(active));
+
+      clearInterval(timerInterval);
+      applyClosureStatusUI();
+      updateSalesAvailability();
+      updateClosureAvailability();
+      showTab("closure");
+      document.getElementById("closedLiquidation").scrollIntoView({behavior:"smooth",block:"start"});
+    });
+
+    function formatDateTime(value){
+      const date=new Date(value);
+      return`${formatDate(date)} · ${formatTime(date)} hs`;
+    }
+
+    function printBreakdownByPayment(metrics){
+      return["cash","transfer","card"].map(method=>{
+        const item=metrics.payments[method];
+        const currencies=Object.entries(item.currencies)
+          .map(([currency,amount])=>`${currency}: ${money(currency,amount)}`)
+          .join(" · ")||"Sin operaciones";
+        return`
+          <div>
+            <strong>${paymentLabel(method)} · ${money("ARS",item.totalARS)}</strong>
+            <span>${item.transactions} operaciones · ${item.units} productos<br>${currencies}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function printBreakdownByCurrency(currencies){
+      const entries=Object.entries(currencies);
+      if(!entries.length)return'<div><strong>Sin ventas</strong><span>No se registraron operaciones.</span></div>';
+      return entries.map(([currency,item])=>`
+        <div>
+          <strong>${money(currency,item.amount)}</strong>
+          <span>${currency} · Equiv. ${money("ARS",item.equivalentARS)} · ${item.transactions} operaciones</span>
+        </div>
+      `).join("");
+    }
+
+    function renderClosedLiquidation(){
+      if(!state.closure)return;
+      const closure=state.closure;
+      const metrics=closure.metrics;
+
+      document.getElementById("liquidationIdLine").textContent=`${closure.id} · Registrada ${formatDateTime(closure.closedAt)}`;
+      document.getElementById("liquidationStart").textContent=formatDateTime(closure.startedAt);
+      document.getElementById("liquidationEnd").textContent=formatDateTime(closure.closedAt);
+      document.getElementById("liquidationUnits").textContent=metrics.units;
+      document.getElementById("liquidationTransactions").textContent=metrics.transactions;
+      document.getElementById("liquidationSalesARS").textContent=money("ARS",metrics.totalARS);
+      document.getElementById("liquidationDiscount").textContent=money("ARS",metrics.discountARS);
+      document.getElementById("liquidationDiscountImpact").textContent=
+        `${metrics.discountImpactPercent.toLocaleString("es-AR",{maximumFractionDigits:2})}%`;
+      document.getElementById("liquidationGoal").textContent=metrics.units>=objectiveUnits
+        ?`Alcanzado (${metrics.units}/${objectiveUnits})`
+        :`No alcanzado (${metrics.units}/${objectiveUnits})`;
+
+      document.getElementById("liquidationPayments").innerHTML=printBreakdownByPayment(metrics);
+      document.getElementById("liquidationCurrencies").innerHTML=printBreakdownByCurrency(metrics.currencies);
+      document.getElementById("liquidationCommission").textContent=money("ARS",closure.commissionARS);
+      document.getElementById("liquidationCommissionMethod").textContent=paymentLabel(closure.commissionMethod);
+      document.getElementById("liquidationOpeningCash").textContent=money("ARS",closure.openingCashARS);
+      const settlement=closure.cashSettlement||computeCashSettlement();
+      document.getElementById("liquidationPhysicalARS").textContent=money("ARS",settlement.physicalARS);
+      document.getElementById("liquidationCashToRender").textContent=money("ARS",closure.cashToRenderARS);
+      document.getElementById("liquidationReimbursement").textContent=money("ARS",closure.reimbursementARS||0);
+      document.getElementById("liquidationARSWaterfall").innerHTML=arsWaterfallHTML(closure.commissionMethod);
+      document.getElementById("liquidationDigital").innerHTML=["transfer","card"].map(method=>{
+        const item=metrics.payments[method];
+        const currencies=Object.entries(item.currencies).map(([currency,amount])=>`${currency}: ${money(currency,amount)}`).join(" · ")||"Sin operaciones";
+        return`<div><strong>${paymentLabel(method)} · ${money("ARS",item.totalARS)}</strong><span>${item.transactions} operaciones · ${item.units} productos<br>${currencies}</span></div>`;
+      }).join("");
+
+      const foreignEntries=Object.entries(settlement.foreign||{});
+      document.getElementById("liquidationForeignCash").innerHTML=foreignEntries.length
+        ?foreignEntries.map(([currency,item])=>`
+          <div><strong>${money(currency,item.received)} a rendir</strong><span>Ventas ${money(currency,item.saleAmount)} · Extra recibido ${money(currency,item.extraReceived)} · Vuelto ARS ${money("ARS",item.changeARS)}</span></div>
+        `).join("")
+        :'<div><strong>Sin efectivo extranjero</strong><span>No hay monedas extranjeras para rendir.</span></div>';
+
+      document.getElementById("liquidationStock").innerHTML=`
+        <div class="print-stock-row header"><div>Material</div><div>Inicial</div><div>Consumo</div><div>Teórico</div><div>Devuelto</div></div>
+        ${closure.stock.map(item=>`
+          <div class="print-stock-row">
+            <div>${item.name}</div><div>${item.initial}</div><div>${item.consumed}</div><div>${item.theoretical}</div><div>${item.actual}${item.difference!==0?` (${item.difference>0?"+":""}${item.difference})`:""}</div>
+          </div>
+        `).join("")}
+      `;
+
+      const operational=closure.operational||{};
+      document.getElementById("liquidationOperationalStatus").innerHTML=`
+        <div><strong>Material de trabajo</strong><span>${operational.materialStatus==="ok"?"Todo funcionó correctamente":operational.materialDetail||"Problema informado"}</span></div>
+        <div><strong>Punto de venta</strong><span>${operational.pointStatus==="ok"?"Sin novedades":operational.pointDetail||"Novedad informada"}</span></div>
+      `;
+      document.getElementById("liquidationObservations").textContent=closure.observations||"Sin observaciones.";
+    }
+
+    function applyClosureStatusUI(){
+      const line=document.getElementById("activeStatusLine");
+      if(line){
+        line.innerHTML='<span class="status-dot"></span>JORNADA CERRADA';
+        line.style.color="#f4d47a";
+      }
+      if(state.closure){
+        const start=new Date(state.closure.startedAt);
+        const end=new Date(state.closure.closedAt);
+        const diff=Math.max(0,end.getTime()-start.getTime());
+        const h=String(Math.floor(diff/3600000)).padStart(2,"0");
+        const m=String(Math.floor((diff%3600000)/60000)).padStart(2,"0");
+        const s=String(Math.floor((diff%60000)/1000)).padStart(2,"0");
+        document.getElementById("elapsedTimer").textContent=`${h}:${m}:${s}`;
+      }
+    }
+
+    document.getElementById("printLiquidationBtn").addEventListener("click",()=>{
+      const previousTitle=document.title;
+      document.title=state.closure?.id||"Liquidacion_Welcome_Buenos_Aires";
+      window.print();
+      setTimeout(()=>document.title=previousTitle,800);
+    });
+
+    updateSaleForm();
+    const affectedSelect=document.getElementById("affectedMaterial");
+    affectedSelect.innerHTML='<option value="">Seleccionar material</option>'+
+      assignedEquipment.map(item=>`<option value="${item.name} · ${item.model} · ${item.code}">${item.name} · ${item.model}</option>`).join("");
+
+    let selectedIncident="";
+    document.querySelectorAll('input[name="incidentType"]').forEach(radio=>{
+      radio.addEventListener("change",()=>{
+        selectedIncident=radio.value;
+        const materialField=document.getElementById("affectedMaterialField");
+        materialField.classList.toggle("hidden",selectedIncident!=="Material de trabajo");
+        if(selectedIncident!=="Material de trabajo")affectedSelect.value="";
+        updateIncidentButton();
+      });
+    });
+
+    affectedSelect.addEventListener("change",updateIncidentButton);
+    document.getElementById("incidentDetail").addEventListener("input",updateIncidentButton);
+
+    function updateIncidentButton(){
+      const detail=document.getElementById("incidentDetail").value.trim();
+      const needsMaterial=selectedIncident==="Material de trabajo";
+      const materialValid=!needsMaterial||affectedSelect.value!=="";
+      document.getElementById("sendIncidentBtn").disabled=!(selectedIncident&&detail.length>=5&&materialValid);
+    }
+
+    document.getElementById("sendIncidentBtn").addEventListener("click",()=>{
+      const detail=document.getElementById("incidentDetail").value.trim();
+      state.incidents.push({
+        type:selectedIncident,
+        material:selectedIncident==="Material de trabajo"?affectedSelect.value:"",
+        detail,
+        time:formatTime(new Date()),
+        automatic:false
+      });
+
+      const active=JSON.parse(localStorage.getItem("wbaActiveShiftV7")||"{}");
+      active.incidents=state.incidents;
+      localStorage.setItem("wbaActiveShiftV7",JSON.stringify(active));
+
+      document.querySelectorAll('input[name="incidentType"]').forEach(r=>r.checked=false);
+      selectedIncident="";
+      affectedSelect.value="";
+      document.getElementById("affectedMaterialField").classList.add("hidden");
+      document.getElementById("incidentDetail").value="";
+      updateIncidentButton();
+      renderIncidentHistory();
+      alert("Incidencia registrada. Jonatan y Administración fueron notificados.");
+    });
+
+    function renderIncidentHistory(){
+      const history=document.getElementById("incidentHistory");
+      const count=state.incidents.length;
+
+      document.getElementById("incidentCountChip").textContent=`${count} ${count===1?"registrada":"registradas"}`;
+      const badge=document.getElementById("incidentBadge");
+      badge.textContent=count;
+      badge.classList.toggle("hidden",count===0);
+
+      if(count===0){
+        history.innerHTML='<div class="history-empty">Todavía no se registraron incidencias.</div>';
+        return;
+      }
+
+      history.innerHTML=[...state.incidents].reverse().map(item=>`
+        <div class="history-item ${item.type==="Material de trabajo"?"material":""}">
+          <strong>${item.type}${item.material?` · ${item.material}`:""}</strong>
+          <span>${item.detail}</span>
+          <span class="history-meta">${item.time} hs · ${item.automatic?"Generada desde el chequeo inicial":"Informada por el fotógrafo"}</span>
+        </div>
+      `).join("");
+    }
+
+    document.getElementById("resetDemoBtn").addEventListener("click",()=>{
+      if(confirm("¿Finalizar la jornada activa y reiniciar la demostración?")){
+        localStorage.removeItem("wbaActiveShiftV7");
+        clearInterval(timerInterval);
+        location.reload();
+      }
+    });
+
+    updateStartRequirements();
+    updateToolGate();
+    renderIncidentHistory();
+    renderSales();
+    updateSalesAvailability();
+    updateClosureAvailability();
+  </script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome Buenos Aires | Usuarios, Roles y Permisos</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#667085;--primary:#0f4c81;--primary2:#123a63;--accent:#13a3a5;
+      --success:#16a34a;--warning:#f59e0b;--danger:#dc2626;--info:#2563eb;--border:#d9e2ec;--soft:#edf4fb;
+      --shadow:0 14px 35px rgba(15,76,129,.12);--radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .app{min-height:100vh;display:grid;grid-template-columns:280px 1fr}
+    aside{background:linear-gradient(180deg,var(--primary2),#071f37);color:#fff;padding:22px 18px;position:sticky;top:0;height:100vh;overflow:auto}
+    .brand{display:flex;gap:12px;align-items:center;padding:8px 6px 22px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:18px}
+    .logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#fff);color:var(--primary2);display:grid;place-items:center;font-weight:900}
+    .brand h1{font-size:16px;line-height:1.1;margin:0}.brand small{color:rgba(255,255,255,.68)}
+    nav button{width:100%;border:0;background:transparent;color:rgba(255,255,255,.78);padding:12px;border-radius:12px;text-align:left;cursor:pointer;font-size:14px;margin:3px 0;display:flex;justify-content:space-between;align-items:center}
+    nav button:hover,nav button.active{background:rgba(255,255,255,.12);color:#fff}
+    .role-box{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:14px;margin-top:18px}
+    .role-box label{display:block;color:rgba(255,255,255,.72);font-size:12px;margin-bottom:8px}
+    select,input,textarea{width:100%;border:1px solid var(--border);border-radius:12px;padding:11px 12px;font:inherit;background:#fff;color:var(--text);outline:none}
+    textarea{min-height:92px;resize:vertical}.role-box select{background:#fff;color:#111827;border:0}
+    main{padding:24px;min-width:0}
+    .topbar{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}
+    .topbar h2{margin:0;font-size:22px;letter-spacing:-.4px}.topbar p{margin:4px 0 0;color:var(--muted);font-size:14px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{border:0;border-radius:12px;padding:11px 14px;font-weight:800;cursor:pointer;background:var(--primary);color:#fff;display:inline-flex;align-items:center;gap:8px;box-shadow:0 8px 18px rgba(15,76,129,.15)}
+    .btn.secondary{background:#fff;color:var(--primary);border:1px solid var(--border);box-shadow:none}.btn.success{background:var(--success)}.btn.warning{background:var(--warning)}.btn.danger{background:var(--danger)}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;min-width:0}
+    .metric small{color:var(--muted);display:block;margin-bottom:8px}.metric strong{font-size:28px;letter-spacing:-1px}.metric .hint{margin-top:8px;font-size:12px;color:var(--muted)}
+    .section{display:none}.section.active{display:block}.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px}
+    .section-head h3{margin:0;font-size:18px}.section-head p{margin:4px 0 0;color:var(--muted);font-size:14px}
+    .filters{display:grid;grid-template-columns:1.2fr .9fr .9fr .9fr;gap:10px;margin-bottom:14px}
+    .table-wrap{overflow:auto;border:1px solid var(--border);border-radius:16px;background:#fff}
+    table{width:100%;border-collapse:collapse;min-width:860px}
+    th{background:var(--soft);color:#344054;font-size:12px;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:12px;white-space:nowrap}
+    td{border-top:1px solid var(--border);padding:12px;vertical-align:middle;font-size:14px}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:900;white-space:nowrap}
+    .green{background:#dcfce7;color:#166534}.blue{background:#dbeafe;color:#1e40af}.yellow{background:#fef3c7;color:#92400e}.red{background:#fee2e2;color:#991b1b}.gray{background:#f1f5f9;color:#475569}.purple{background:#ede9fe;color:#5b21b6}
+    .mini-actions{display:flex;gap:6px;flex-wrap:wrap}.mini-actions button{border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 9px;cursor:pointer;color:var(--primary);font-weight:800;font-size:12px}
+    .two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+    .permission-grid{display:grid;grid-template-columns:260px repeat(6,92px);overflow:auto;border:1px solid var(--border);border-radius:16px;background:#fff}
+    .permission-grid>div{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:11px;min-height:45px;display:flex;align-items:center;font-size:13px}
+    .permission-grid .head{background:var(--soft);font-weight:900;color:#344054;text-transform:uppercase;font-size:11px;letter-spacing:.04em;justify-content:center;text-align:center}.permission-grid .module{font-weight:800;justify-content:flex-start}
+    .check{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;margin:auto;font-weight:900;font-size:13px}.yes{background:#dcfce7;color:#166534}.no{background:#fee2e2;color:#991b1b}.limited{background:#fef3c7;color:#92400e}
+    .flow{display:grid;grid-template-columns:repeat(7,minmax(130px,1fr));gap:10px;overflow:auto;padding-bottom:6px}.flow-step{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;min-height:105px}
+    .flow-step span{width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:900;margin-bottom:8px}.flow-step strong{display:block;margin-bottom:5px}.flow-step small{color:var(--muted);line-height:1.35}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.form-grid .full{grid-column:1/-1} label{display:block;font-size:12px;color:#344054;font-weight:900;margin-bottom:7px}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.56);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal{width:min(760px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:24px;box-shadow:0 30px 80px rgba(0,0,0,.28);padding:20px}
+    .modal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}.modal-head h3{margin:0}.close{border:0;background:#f1f5f9;border-radius:12px;width:38px;height:38px;cursor:pointer;font-size:18px}
+    .toast{position:fixed;right:18px;bottom:18px;background:#111827;color:#fff;padding:13px 15px;border-radius:14px;box-shadow:var(--shadow);display:none;z-index:60;max-width:380px;font-weight:800}
+    .mobile-preview{width:330px;max-width:100%;margin:auto;border:10px solid #111827;border-radius:32px;overflow:hidden;background:#fff;box-shadow:0 22px 55px rgba(0,0,0,.22)}
+    .phone-top{background:var(--primary2);color:#fff;padding:18px}.phone-top h4{margin:0}.phone-top p{margin:4px 0 0;color:rgba(255,255,255,.72);font-size:13px}
+    .phone-body{padding:14px;background:#f8fafc}.phone-kpi{background:#fff;border:1px solid var(--border);border-radius:18px;padding:14px;margin-bottom:10px}.phone-kpi small{color:var(--muted)}.phone-kpi strong{display:block;font-size:24px;margin-top:4px}
+    .blocked{opacity:.48;filter:grayscale(1);pointer-events:none}.note{padding:14px;border-radius:16px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:14px;line-height:1.45;margin-bottom:14px}
+    .security-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.security-item{border:1px solid var(--border);background:#fff;border-radius:16px;padding:14px}.security-item strong{display:block;margin-bottom:6px}.security-item small{color:var(--muted);line-height:1.4}
+    .status-line{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.hidden-by-role{display:none!important}
+    @media(max-width:1050px){.app{grid-template-columns:1fr}aside{position:relative;height:auto}nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.two-col{grid-template-columns:1fr}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:680px){main{padding:14px}.topbar{display:block}.actions{justify-content:flex-start;margin-top:14px}.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}nav{grid-template-columns:1fr}.security-list{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand"><div class="logo">W</div><div><h1>Welcome Buenos Aires</h1><small>Usuarios · Roles · Permisos</small></div></div>
+    <nav id="sideNav">
+      <button class="active" data-section="dashboard">Dashboard <span>⌁</span></button>
+      <button data-section="usuarios">Usuarios <span>›</span></button>
+      <button data-section="matriz">Matriz de permisos <span>›</span></button>
+      <button data-section="ajustes">Solicitudes de ajuste <span>›</span></button>
+      <button data-section="auditoria">Auditoría <span>›</span></button>
+      <button data-section="especiales">Permisos especiales <span>›</span></button>
+      <button data-section="aliados">Aliados comerciales <span>›</span></button>
+      <button data-section="mobile">Vista fotógrafo <span>›</span></button>
+      <button data-section="programador">Notas para programador <span>›</span></button>
+    </nav>
+    <div class="role-box">
+      <label>Simular ingreso como</label>
+      <select id="roleSimulator"></select>
+      <div class="status-line"><span class="badge blue" id="roleBadge">Dirección</span><span class="badge green" id="scopeBadge">Acceso total</span></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div><h2 id="pageTitle">Módulo de Usuarios, Roles y Permisos</h2><p id="pageSubtitle">Prototipo HTML navegable para revisar usabilidad y reglas con el programador.</p></div>
+      <div class="actions">
+        <button class="btn secondary" onclick="resetDemo()">Restaurar demo</button>
+        <button class="btn secondary" onclick="exportCSV('users')">Exportar usuarios</button>
+        <button class="btn" onclick="openUserModal()">+ Nuevo usuario</button>
+      </div>
+    </div>
+
+    <section id="dashboard" class="section active">
+      <div class="grid">
+        <div class="card metric"><small>Usuarios activos</small><strong id="kpiUsers">0</strong><div class="hint">Con rol y punto asignado.</div></div>
+        <div class="card metric"><small>Solicitudes pendientes</small><strong id="kpiRequests">0</strong><div class="hint">Requieren revisión administrativa.</div></div>
+        <div class="card metric"><small>Acciones auditadas</small><strong id="kpiAudit">0</strong><div class="hint">Registro de acciones sensibles.</div></div>
+        <div class="card metric"><small>Aliados con acceso</small><strong id="kpiPartners">0</strong><div class="hint">Usuarios externos limitados.</div></div>
+      </div>
+
+      <div class="card">
+        <div class="section-head"><div><h3>Flujo obligatorio para modificar o anular una venta</h3><p>Jonatan y encargados no modifican ventas confirmadas directamente. Generan solicitud y Administración aprueba.</p></div><button class="btn warning" onclick="createDemoRequest()">Crear solicitud demo</button></div>
+        <div class="flow">
+          <div class="flow-step"><span>1</span><strong>Error detectado</strong><small>Se identifica venta mal cargada, anulación o diferencia.</small></div>
+          <div class="flow-step"><span>2</span><strong>Solicitud</strong><small>Usuario operativo carga motivo obligatorio.</small></div>
+          <div class="flow-step"><span>3</span><strong>En revisión</strong><small>Administración revisa venta, rendición y caja.</small></div>
+          <div class="flow-step"><span>4</span><strong>Aprobación</strong><small>Se acepta o rechaza el ajuste.</small></div>
+          <div class="flow-step"><span>5</span><strong>Aplicación</strong><small>El sistema crea ajuste, no borra el original.</small></div>
+          <div class="flow-step"><span>6</span><strong>Notificación</strong><small>Dirección recibe aviso automático.</small></div>
+          <div class="flow-step"><span>7</span><strong>Auditoría</strong><small>Queda valor anterior, nuevo, usuario y motivo.</small></div>
+        </div>
+      </div>
+
+      <div class="two-col" style="margin-top:14px;">
+        <div class="card">
+          <div class="section-head"><div><h3>Resumen de permisos por rol</h3><p>Vista rápida para validar alcance.</p></div></div>
+          <div class="table-wrap"><table><thead><tr><th>Rol</th><th>Alcance</th><th>Puede editar</th><th>Puede eliminar</th><th>Rentabilidad</th></tr></thead><tbody id="roleSummary"></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="section-head"><div><h3>Reglas clave</h3><p>Decisiones para evitar errores operativos.</p></div></div>
+          <div class="security-list">
+            <div class="security-item"><strong>No borrar ventas</strong><small>Anular o eliminar lógicamente, manteniendo historial.</small></div>
+            <div class="security-item"><strong>Motivo obligatorio</strong><small>Todo ajuste sensible debe tener explicación.</small></div>
+            <div class="security-item"><strong>Período cerrado bloqueado</strong><small>Solo corrección mediante ajuste auditado.</small></div>
+            <div class="security-item"><strong>Notificación a Dirección</strong><small>Administración informa toda modificación crítica.</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="usuarios" class="section">
+      <div class="card">
+        <div class="section-head"><div><h3>Listado de usuarios</h3><p>Alta, edición, desactivación, asignación de rol, ciudad y punto.</p></div><button class="btn" onclick="openUserModal()">+ Nuevo usuario</button></div>
+        <div class="filters">
+          <input id="searchUser" placeholder="Buscar por nombre, email o punto..." oninput="renderUsers()" />
+          <select id="filterRole" onchange="renderUsers()"></select>
+          <select id="filterPoint" onchange="renderUsers()"></select>
+          <select id="filterStatus" onchange="renderUsers()"><option value="">Todos los estados</option><option>Activo</option><option>Inactivo</option></select>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Usuario</th><th>Rol</th><th>Ciudad</th><th>Punto asignado</th><th>Estado</th><th>Último acceso</th><th>Acciones</th></tr></thead><tbody id="usersTable"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="matriz" class="section"><div class="card"><div class="section-head"><div><h3>Matriz de permisos</h3><p>Separación entre ver, crear, editar, eliminar, aprobar y exportar.</p></div><select id="matrixRole" onchange="renderMatrix()"></select></div><div id="matrixContainer" class="permission-grid"></div></div></section>
+
+    <section id="ajustes" class="section">
+      <div class="card">
+        <div class="section-head"><div><h3>Solicitudes de ajuste</h3><p>Flujo para cambios de ventas, rendiciones, caja, comisiones y cierres.</p></div><div class="actions"><button class="btn warning" onclick="openRequestModal()">+ Solicitar ajuste</button><button class="btn secondary" onclick="exportCSV('requests')">Exportar solicitudes</button></div></div>
+        <div class="note">Regla propuesta: una solicitud aprobada nunca borra el registro original. Genera un movimiento de ajuste vinculado y deja trazabilidad completa.</div>
+        <div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Solicitante</th><th>Módulo</th><th>Registro</th><th>Motivo</th><th>Estado</th><th>Aprobador</th><th>Acciones</th></tr></thead><tbody id="requestsTable"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="auditoria" class="section"><div class="card"><div class="section-head"><div><h3>Auditoría</h3><p>Registro de acciones sensibles: usuario, rol, hora, módulo, valor anterior, valor nuevo y motivo.</p></div><button class="btn secondary" onclick="exportCSV('audit')">Exportar auditoría</button></div><div class="table-wrap"><table><thead><tr><th>Fecha y hora</th><th>Usuario</th><th>Rol</th><th>Acción</th><th>Módulo</th><th>Registro</th><th>Motivo</th></tr></thead><tbody id="auditTable"></tbody></table></div></div></section>
+
+    <section id="especiales" class="section"><div class="card"><div class="section-head"><div><h3>Permisos especiales temporales</h3><p>Para casos puntuales, con vencimiento automático y auditoría.</p></div><button class="btn" onclick="openSpecialModal()">+ Nuevo permiso temporal</button></div><div class="table-wrap"><table><thead><tr><th>Usuario</th><th>Permiso</th><th>Alcance</th><th>Vence</th><th>Otorgado por</th><th>Estado</th></tr></thead><tbody id="specialTable"></tbody></table></div></div></section>
+
+    <section id="aliados" class="section"><div class="card"><div class="section-head"><div><h3>Acceso de aliados comerciales</h3><p>Información visible solo del punto asociado y de su comisión correspondiente.</p></div><button class="btn secondary" onclick="exportCSV('partners')">Exportar aliados</button></div><div class="table-wrap"><table><thead><tr><th>Aliado</th><th>Punto asociado</th><th>Fotógrafos visibles</th><th>Fotos sacadas</th><th>Fotos vendidas</th><th>Facturación diaria</th><th>Comisión aliado</th><th>Estado liquidación</th></tr></thead><tbody id="partnersTable"></tbody></table></div></div></section>
+
+    <section id="mobile" class="section">
+      <div class="two-col">
+        <div class="card">
+          <div class="section-head"><div><h3>Vista mobile del fotógrafo</h3><p>Acceso simplificado: solo jornada, objetivo, ventas propias y comisión estimada.</p></div></div>
+          <div class="mobile-preview"><div class="phone-top"><h4>Hola, Valentín</h4><p>Obelisco · Jornada activa</p></div><div class="phone-body"><div class="phone-kpi"><small>Objetivo diario</small><strong>25 ventas</strong></div><div class="phone-kpi"><small>Ventas del día</small><strong>18</strong><span class="badge yellow">72% cumplido</span></div><div class="phone-kpi"><small>Comisión estimada día</small><strong>$ 42.300</strong></div><div class="phone-kpi"><small>Objetivo mensual</small><strong>61%</strong></div><button class="btn" style="width:100%;justify-content:center;margin-bottom:8px;">+ Registrar venta</button><button class="btn secondary" style="width:100%;justify-content:center;">Cerrar jornada / rendir</button></div></div>
+        </div>
+        <div class="card"><div class="section-head"><div><h3>Reglas de la pantalla del fotógrafo</h3><p>Se busca velocidad operativa y cero acceso a información sensible.</p></div></div><div class="security-list"><div class="security-item"><strong>Solo datos propios</strong><small>No ve ventas ni comisiones de otros fotógrafos.</small></div><div class="security-item"><strong>Venta bloqueada sin jornada</strong><small>No puede vender si no inició jornada asignada.</small></div><div class="security-item"><strong>Sin edición histórica</strong><small>Luego de rendir, cualquier cambio requiere solicitud.</small></div><div class="security-item"><strong>Comisión estimada</strong><small>Visible por día, mes y año, sujeta a validación final.</small></div></div></div>
+      </div>
+    </section>
+
+    <section id="programador" class="section">
+      <div class="card">
+        <div class="section-head"><div><h3>Notas para el programador</h3><p>Este HTML sirve para usabilidad. Para producción requiere backend, base de datos y permisos reales.</p></div></div>
+        <div class="security-list">
+          <div class="security-item"><strong>Backend requerido</strong><small>Laravel, Node, Django o similar. El prototipo usa localStorage solo para demo.</small></div>
+          <div class="security-item"><strong>Base de datos sugerida</strong><small>users, roles, permissions, user_scopes, audit_logs, adjustment_requests, special_permissions, partner_access.</small></div>
+          <div class="security-item"><strong>RBAC + Scope</strong><small>No alcanza con rol. También hay que restringir por ciudad, punto de venta y aliado asociado.</small></div>
+          <div class="security-item"><strong>Soft delete obligatorio</strong><small>Ventas, rendiciones y movimientos financieros no se eliminan físicamente.</small></div>
+          <div class="security-item"><strong>Auditoría inmutable</strong><small>El log de auditoría no debería poder ser editado ni eliminado desde la interfaz.</small></div>
+          <div class="security-item"><strong>Notificaciones</strong><small>Administración modifica un registro sensible → Dirección recibe notificación automática.</small></div>
+        </div>
+        <div style="margin-top:16px" class="table-wrap"><table><thead><tr><th>Entidad</th><th>Campos mínimos</th><th>Comentario</th></tr></thead><tbody>
+          <tr><td>users</td><td>id, name, email, role_id, status, last_login</td><td>Usuario base del sistema.</td></tr>
+          <tr><td>roles</td><td>id, name, description, level</td><td>Dirección, Administración, Encargado, Fotógrafo, Aliado.</td></tr>
+          <tr><td>permissions</td><td>role_id, module, can_view, can_create, can_edit, can_delete, can_approve, can_export</td><td>Matriz de permisos.</td></tr>
+          <tr><td>user_scopes</td><td>user_id, city_id, point_id, partner_id</td><td>Define alcance por punto, ciudad o aliado.</td></tr>
+          <tr><td>audit_logs</td><td>user_id, action, module, record_id, old_value, new_value, reason, ip, created_at</td><td>Historial inmutable.</td></tr>
+          <tr><td>adjustment_requests</td><td>requester_id, module, record_id, reason, status, approver_id</td><td>Flujo de aprobación.</td></tr>
+          <tr><td>special_permissions</td><td>user_id, permission, scope, expires_at, granted_by</td><td>Permisos temporales.</td></tr>
+        </tbody></table></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="userModal" class="modal-backdrop"><div class="modal"><div class="modal-head"><div><h3 id="userModalTitle">Nuevo usuario</h3><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Alta o edición de usuario con rol y alcance operativo.</p></div><button class="close" onclick="closeModals()">×</button></div><div class="form-grid"><div><label>Nombre</label><input id="uName"></div><div><label>Email</label><input id="uEmail"></div><div><label>Rol</label><select id="uRole"></select></div><div><label>Estado</label><select id="uStatus"><option>Activo</option><option>Inactivo</option></select></div><div><label>Ciudad</label><select id="uCity"><option>Buenos Aires</option><option>Tigre</option><option>Futura ciudad</option></select></div><div><label>Punto asignado</label><select id="uPoint"></select></div><div class="full"><label>Observaciones</label><textarea id="uNotes" placeholder="Ej.: acceso externo limitado, punto asignado, permisos especiales..."></textarea></div></div><div class="actions" style="margin-top:16px"><button class="btn secondary" onclick="closeModals()">Cancelar</button><button class="btn" onclick="saveUser()">Guardar usuario</button></div></div></div>
+
+<div id="requestModal" class="modal-backdrop"><div class="modal"><div class="modal-head"><div><h3>Solicitar ajuste</h3><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Todo cambio sensible requiere motivo y aprobación.</p></div><button class="close" onclick="closeModals()">×</button></div><div class="form-grid"><div><label>Solicitante</label><select id="rRequester"></select></div><div><label>Módulo afectado</label><select id="rModule"><option>Ventas</option><option>Rendiciones</option><option>Caja</option><option>Stock</option><option>Comisiones</option><option>Cierre mensual</option></select></div><div><label>Registro afectado</label><input id="rRecord" placeholder="Ej.: VTA-000145"></div><div><label>Tipo de ajuste</label><select id="rType"><option>Modificar registro</option><option>Anular registro</option><option>Reabrir cierre</option><option>Ajuste administrativo</option></select></div><div class="full"><label>Motivo obligatorio</label><textarea id="rReason" placeholder="Detallar motivo, valor anterior y corrección solicitada."></textarea></div></div><div class="actions" style="margin-top:16px"><button class="btn secondary" onclick="closeModals()">Cancelar</button><button class="btn warning" onclick="saveRequest()">Enviar solicitud</button></div></div></div>
+
+<div id="specialModal" class="modal-backdrop"><div class="modal"><div class="modal-head"><div><h3>Nuevo permiso especial temporal</h3><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Permiso puntual con vencimiento automático.</p></div><button class="close" onclick="closeModals()">×</button></div><div class="form-grid"><div><label>Usuario</label><select id="sUser"></select></div><div><label>Permiso</label><select id="sPermission"><option>Corregir venta puntual</option><option>Ver reporte especial</option><option>Reabrir jornada</option><option>Exportar reporte</option></select></div><div><label>Alcance</label><select id="sScope"></select></div><div><label>Vence</label><input id="sExpires" type="date"></div><div class="full"><label>Motivo</label><textarea id="sReason" placeholder="Explicar por qué se otorga el permiso temporal."></textarea></div></div><div class="actions" style="margin-top:16px"><button class="btn secondary" onclick="closeModals()">Cancelar</button><button class="btn" onclick="saveSpecial()">Guardar permiso</button></div></div></div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const ROLES=["Dirección","Administración","Encargado General","Encargado de Punto","Fotógrafo","Aliado Comercial"];
+const POINTS=["Todos los puntos","Obelisco","Escalinata","City Bus","Sturla Tigre","Caminito / Esquina"];
+const MODULES=["Dashboard general","Usuarios","Puntos de venta","Productos y precios","Jornadas","Ventas","Rendiciones","Stock","Dispositivos","Objetivos","Ranking","Capacitaciones","Comisiones","Liquidaciones","Gastos","Rentabilidad","Cierres","Auditoría","Aliados"];
+const ROLE_RULES={
+"Dirección":{scope:"Acceso total",color:"green",summary:["Total","Total","Permitida con auditoría","Completa"],permissions:{default:["yes","yes","yes","yes","yes","yes"]}},
+"Administración":{scope:"Admin + Finanzas",color:"blue",summary:["Amplio","Administrativa/financiera","Solo lógica + notifica Dirección","Completa autorizada"],permissions:{default:["yes","yes","yes","limited","yes","yes"],"Usuarios":["yes","yes","limited","no","no","yes"],"Auditoría":["yes","no","no","no","no","yes"]}},
+"Encargado General":{scope:"Operativo total",color:"yellow",summary:["Todos los puntos operativos","Operativa","No permitida","No ve rentabilidad neta"],permissions:{default:["yes","yes","yes","no","limited","yes"],"Usuarios":["limited","no","no","no","no","no"],"Gastos":["no","no","no","no","no","no"],"Rentabilidad":["no","no","no","no","no","no"],"Liquidaciones":["limited","no","no","no","no","no"],"Auditoría":["limited","no","no","no","no","no"],"Aliados":["limited","no","no","no","no","no"]}},
+"Encargado de Punto":{scope:"Solo punto asignado",color:"purple",summary:["Punto asignado","Programación y operación","No permitida","No visible"],permissions:{default:["limited","limited","limited","no","no","limited"],"Usuarios":["no","no","no","no","no","no"],"Productos y precios":["limited","no","no","no","no","no"],"Comisiones":["no","no","no","no","no","no"],"Liquidaciones":["no","no","no","no","no","no"],"Gastos":["no","no","no","no","no","no"],"Rentabilidad":["no","no","no","no","no","no"],"Cierres":["limited","no","no","no","no","no"],"Auditoría":["no","no","no","no","no","no"],"Aliados":["no","no","no","no","no","no"]}},
+"Fotógrafo":{scope:"Solo información propia",color:"gray",summary:["Personal","Ventas propias en jornada","No permitida","No visible"],permissions:{default:["no","no","no","no","no","no"],"Dashboard general":["limited","no","no","no","no","no"],"Jornadas":["limited","limited","limited","no","no","no"],"Ventas":["limited","yes","limited","no","no","no"],"Rendiciones":["limited","yes","limited","no","no","no"],"Stock":["limited","no","no","no","no","no"],"Objetivos":["limited","no","no","no","no","no"],"Ranking":["limited","no","no","no","no","no"],"Comisiones":["limited","no","no","no","no","no"],"Capacitaciones":["limited","no","no","no","no","no"]}},
+"Aliado Comercial":{scope:"Punto asociado externo",color:"gray",summary:["Punto asociado","No edita","No permitida","Solo su comisión"],permissions:{default:["no","no","no","no","no","no"],"Dashboard general":["limited","no","no","no","no","limited"],"Jornadas":["limited","no","no","no","no","limited"],"Ventas":["limited","no","no","no","no","limited"],"Objetivos":["limited","no","no","no","no","limited"],"Aliados":["limited","no","no","no","no","limited"]}}
+};
+let state={},editingUserId=null;
+function defaultState(){return{currentRole:"Dirección",users:[{id:1,name:"Jerónimo Dirección",email:"direccion@welcome.com",role:"Dirección",city:"Buenos Aires",point:"Todos los puntos",status:"Activo",last:"Hoy 09:14",notes:"Acceso 100%."},{id:2,name:"Administración",email:"admin@welcome.com",role:"Administración",city:"Buenos Aires",point:"Todos los puntos",status:"Activo",last:"Hoy 10:02",notes:"Ajustes sensibles notifican a Dirección."},{id:3,name:"Jonatan",email:"jonatan@welcome.com",role:"Encargado General",city:"Buenos Aires",point:"Todos los puntos",status:"Activo",last:"Hoy 08:55",notes:"Acceso operativo completo sin rentabilidad."},{id:4,name:"Encargado Obelisco",email:"obelisco@welcome.com",role:"Encargado de Punto",city:"Buenos Aires",point:"Obelisco",status:"Activo",last:"Ayer 18:10",notes:"Solo punto asignado."},{id:5,name:"Valentín",email:"valentin@welcome.com",role:"Fotógrafo",city:"Buenos Aires",point:"Obelisco",status:"Activo",last:"Hoy 09:01",notes:"Vista mobile propia."},{id:6,name:"Aliado Caminito",email:"aliado@esquina.com",role:"Aliado Comercial",city:"Buenos Aires",point:"Caminito / Esquina",status:"Activo",last:"Ayer 15:42",notes:"Acceso externo limitado."}],requests:[{id:1,date:"2026-07-13 11:20",requester:"Jonatan",role:"Encargado General",module:"Ventas",record:"VTA-000142",reason:"Venta cargada con medio de pago incorrecto. Solicita pasar de efectivo a Mercado Pago.",status:"En revisión",approver:"Administración"},{id:2,date:"2026-07-13 12:05",requester:"Encargado Obelisco",role:"Encargado de Punto",module:"Rendiciones",record:"REN-000071",reason:"Diferencia de caja por venta duplicada pendiente de revisión.",status:"Solicitada",approver:"Pendiente"}],audit:[{date:"2026-07-13 09:15",user:"Jerónimo Dirección",role:"Dirección",action:"Creó usuario",module:"Usuarios",record:"USR-0006",reason:"Alta acceso aliado comercial."},{date:"2026-07-13 10:03",user:"Administración",role:"Administración",action:"Modificó estado",module:"Rendiciones",record:"REN-000068",reason:"Validación con diferencia documentada. Notifica Dirección."},{date:"2026-07-13 11:20",user:"Jonatan",role:"Encargado General",action:"Solicitó ajuste",module:"Ventas",record:"VTA-000142",reason:"Medio de pago incorrecto."}],specials:[{user:"Jonatan",permission:"Corregir venta puntual",scope:"VTA-000142",expires:"2026-07-14",grantedBy:"Dirección",status:"Activo"},{user:"Encargado Obelisco",permission:"Exportar reporte",scope:"Obelisco",expires:"2026-07-20",grantedBy:"Dirección",status:"Activo"}],partners:[{partner:"Aliado Caminito",point:"Caminito / Esquina",photographers:"Zoe, Cande",taken:310,sold:224,billing:"$ 3.024.000",commission:"$ 967.680",status:"Pendiente"},{partner:"Sturla",point:"Sturla Tigre",photographers:"Juan",taken:180,sold:121,billing:"$ 1.633.500",commission:"$ 392.040",status:"En revisión"},{partner:"City Bus",point:"City Bus",photographers:"Martín, Jime",taken:420,sold:276,billing:"$ 3.726.000",commission:"$ 745.200",status:"Liquidada"}]}}
+function save(){localStorage.setItem("welcome_roles_demo",JSON.stringify(state))}
+function load(){state=localStorage.getItem("welcome_roles_demo")?JSON.parse(localStorage.getItem("welcome_roles_demo")):defaultState()}
+function resetDemo(){if(confirm("¿Restaurar datos demo? Se perderán cambios locales.")){localStorage.removeItem("welcome_roles_demo");load();init();toast("Datos demo restaurados.")}}
+function init(){populateSelects();renderAll();applyRole(false)}
+function populateSelects(){["roleSimulator","filterRole","uRole","matrixRole"].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.innerHTML=id==="filterRole"?'<option value="">Todos los roles</option>':"";ROLES.forEach(r=>el.insertAdjacentHTML("beforeend",`<option value="${r}">${r}</option>`))});["filterPoint","uPoint","sScope"].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.innerHTML=id==="filterPoint"?'<option value="">Todos los puntos</option>':"";POINTS.forEach(p=>el.insertAdjacentHTML("beforeend",`<option value="${p}">${p}</option>`))});document.getElementById("roleSimulator").value=state.currentRole||"Dirección";document.getElementById("matrixRole").value=state.currentRole||"Dirección"}
+function renderAll(){renderKPIs();renderUsers();renderRoleSummary();renderMatrix();renderRequests();renderAudit();renderSpecials();renderPartners();renderRequestUserOptions()}
+function renderKPIs(){kpiUsers.textContent=state.users.filter(u=>u.status==="Activo").length;kpiRequests.textContent=state.requests.filter(r=>["Solicitada","En revisión"].includes(r.status)).length;kpiAudit.textContent=state.audit.length;kpiPartners.textContent=state.users.filter(u=>u.role==="Aliado Comercial"&&u.status==="Activo").length}
+function renderRoleSummary(){roleSummary.innerHTML="";ROLES.forEach(role=>{const s=ROLE_RULES[role].summary;roleSummary.insertAdjacentHTML("beforeend",`<tr><td><span class="badge ${ROLE_RULES[role].color}">${role}</span></td><td>${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td><td>${s[3]}</td></tr>`)})}
+function renderUsers(){const q=(searchUser?.value||"").toLowerCase(),role=filterRole?.value||"",point=filterPoint?.value||"",status=filterStatus?.value||"";usersTable.innerHTML="";let rows=state.users.filter(u=>`${u.name} ${u.email} ${u.point} ${u.role}`.toLowerCase().includes(q)&&(!role||u.role===role)&&(!point||u.point===point)&&(!status||u.status===status));if(!rows.length){usersTable.innerHTML='<tr><td colspan="7">No hay usuarios para los filtros seleccionados.</td></tr>';return}rows.forEach(u=>{const canEdit=canCurrent("Usuarios","edit"),canDelete=canCurrent("Usuarios","delete");usersTable.insertAdjacentHTML("beforeend",`<tr><td><strong>${u.name}</strong><br><small style="color:var(--muted)">${u.email}</small></td><td><span class="badge ${ROLE_RULES[u.role].color}">${u.role}</span></td><td>${u.city}</td><td>${u.point}</td><td><span class="badge ${u.status==="Activo"?"green":"gray"}">${u.status}</span></td><td>${u.last}</td><td><div class="mini-actions"><button onclick="viewUser(${u.id})">Ver</button><button class="${canEdit?'':'blocked'}" onclick="editUser(${u.id})">Editar</button><button class="${canDelete?'':'blocked'}" onclick="toggleUser(${u.id})">${u.status==="Activo"?"Desactivar":"Activar"}</button></div></td></tr>`)})}
+function permissionFor(role,module){const rules=ROLE_RULES[role];return rules.permissions[module]||rules.permissions.default||["no","no","no","no","no","no"]}
+function renderMatrix(){const role=matrixRole.value||state.currentRole;const cols=["Módulo","Ver","Crear","Editar","Eliminar","Aprobar","Exportar"];matrixContainer.innerHTML=cols.map(c=>`<div class="head">${c}</div>`).join("");MODULES.forEach(m=>{matrixContainer.insertAdjacentHTML("beforeend",`<div class="module">${m}</div>`);permissionFor(role,m).forEach(v=>matrixContainer.insertAdjacentHTML("beforeend",`<div>${permIcon(v)}</div>`))})}
+function permIcon(v){return v==="yes"?'<span class="check yes">✓</span>':v==="limited"?'<span class="check limited">•</span>':'<span class="check no">×</span>'}
+function renderRequests(){requestsTable.innerHTML="";if(!state.requests.length){requestsTable.innerHTML='<tr><td colspan="8">No hay solicitudes.</td></tr>';return}state.requests.forEach(r=>{const canApprove=canCurrent(r.module,"approve");requestsTable.insertAdjacentHTML("beforeend",`<tr><td>${r.date}</td><td><strong>${r.requester}</strong><br><small style="color:var(--muted)">${r.role}</small></td><td>${r.module}</td><td>${r.record}</td><td>${r.reason}</td><td>${statusBadge(r.status)}</td><td>${r.approver}</td><td><div class="mini-actions"><button class="${canApprove?'':'blocked'}" onclick="resolveRequest(${r.id},'Aprobada')">Aprobar</button><button class="${canApprove?'':'blocked'}" onclick="resolveRequest(${r.id},'Rechazada')">Rechazar</button></div></td></tr>`)})}
+function renderAudit(){auditTable.innerHTML="";state.audit.slice().reverse().forEach(a=>auditTable.insertAdjacentHTML("beforeend",`<tr><td>${a.date}</td><td>${a.user}</td><td>${a.role}</td><td>${a.action}</td><td>${a.module}</td><td>${a.record}</td><td>${a.reason}</td></tr>`))}
+function renderSpecials(){specialTable.innerHTML="";state.specials.forEach(s=>specialTable.insertAdjacentHTML("beforeend",`<tr><td>${s.user}</td><td>${s.permission}</td><td>${s.scope}</td><td>${s.expires}</td><td>${s.grantedBy}</td><td><span class="badge green">${s.status}</span></td></tr>`))}
+function renderPartners(){partnersTable.innerHTML="";state.partners.forEach(p=>partnersTable.insertAdjacentHTML("beforeend",`<tr><td>${p.partner}</td><td>${p.point}</td><td>${p.photographers}</td><td>${p.taken}</td><td>${p.sold}</td><td>${p.billing}</td><td>${p.commission}</td><td>${statusBadge(p.status)}</td></tr>`))}
+function renderRequestUserOptions(){rRequester.innerHTML="";sUser.innerHTML="";state.users.filter(u=>u.status==="Activo").forEach(u=>{rRequester.insertAdjacentHTML("beforeend",`<option value="${u.name}">${u.name} · ${u.role}</option>`);sUser.insertAdjacentHTML("beforeend",`<option value="${u.name}">${u.name} · ${u.role}</option>`)})}
+function statusBadge(status){const color={"Activo":"green","Inactivo":"gray","Solicitada":"yellow","En revisión":"blue","Aprobada":"green","Rechazada":"red","Aplicada":"green","Pendiente":"yellow","Liquidada":"green"}[status]||"gray";return `<span class="badge ${color}">${status}</span>`}
+function canCurrent(module,action){const map={view:0,create:1,edit:2,delete:3,approve:4,export:5};const p=permissionFor(state.currentRole,module)[map[action]];return p==="yes"||p==="limited"}
+function applyRole(show=true){const role=roleSimulator.value;state.currentRole=role;roleBadge.textContent=role;const rule=ROLE_RULES[role];scopeBadge.textContent=rule.scope;scopeBadge.className=`badge ${rule.color}`;matrixRole.value=role;document.querySelectorAll("#sideNav button").forEach(b=>{const section=b.dataset.section;b.classList.remove("hidden-by-role");if(role==="Fotógrafo"&&!["dashboard","mobile","programador"].includes(section))b.classList.add("hidden-by-role");if(role==="Aliado Comercial"&&!["dashboard","aliados","programador"].includes(section))b.classList.add("hidden-by-role");if(role==="Encargado de Punto"&&["auditoria","especiales","aliados"].includes(section))b.classList.add("hidden-by-role")});renderAll();save();if(show)toast(`Vista simulada como: ${role}`)}
+roleSimulator.addEventListener("change",()=>applyRole(true));
+sideNav.addEventListener("click",e=>{const btn=e.target.closest("button[data-section]");if(!btn||btn.classList.contains("hidden-by-role"))return;document.querySelectorAll("#sideNav button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.getElementById(btn.dataset.section).classList.add("active");const titles={dashboard:["Módulo de Usuarios, Roles y Permisos","Prototipo HTML navegable para revisar usabilidad y reglas con el programador."],usuarios:["Usuarios","Alta, edición y alcance de cada persona dentro del sistema."],matriz:["Matriz de permisos","Validación por rol: ver, crear, editar, eliminar, aprobar y exportar."],ajustes:["Solicitudes de ajuste","Flujo de aprobación para modificar registros sensibles."],auditoria:["Auditoría","Historial de acciones críticas e inmutables."],especiales:["Permisos especiales","Permisos puntuales con vencimiento automático."],aliados:["Aliados comerciales","Acceso externo limitado por punto de venta."],mobile:["Vista fotógrafo","Pantalla operativa simplificada para celular."],programador:["Notas para programador","Estructura técnica sugerida para desarrollo real."]};pageTitle.textContent=titles[btn.dataset.section][0];pageSubtitle.textContent=titles[btn.dataset.section][1]});
+function openUserModal(){editingUserId=null;userModalTitle.textContent="Nuevo usuario";["uName","uEmail","uNotes"].forEach(id=>document.getElementById(id).value="");uRole.value="Fotógrafo";uStatus.value="Activo";uCity.value="Buenos Aires";uPoint.value="Obelisco";userModal.style.display="flex"}
+function viewUser(id){const u=state.users.find(x=>x.id===id);alert(`Usuario: ${u.name}\nEmail: ${u.email}\nRol: ${u.role}\nCiudad: ${u.city}\nPunto: ${u.point}\nEstado: ${u.status}\n\nNotas: ${u.notes||"-"}`)}
+function editUser(id){if(!canCurrent("Usuarios","edit"))return toast("Este rol no puede editar usuarios.");const u=state.users.find(x=>x.id===id);editingUserId=id;userModalTitle.textContent="Editar usuario";uName.value=u.name;uEmail.value=u.email;uRole.value=u.role;uStatus.value=u.status;uCity.value=u.city;uPoint.value=u.point;uNotes.value=u.notes||"";userModal.style.display="flex"}
+function saveUser(){const u={name:uName.value.trim(),email:uEmail.value.trim(),role:uRole.value,status:uStatus.value,city:uCity.value,point:uPoint.value,notes:uNotes.value.trim(),last:"Sin acceso"};if(!u.name||!u.email)return toast("Completá nombre y email.");if(editingUserId){const idx=state.users.findIndex(x=>x.id===editingUserId);const old=JSON.stringify(state.users[idx]);state.users[idx]={...state.users[idx],...u};addAudit("Modificó usuario","Usuarios","USR-"+editingUserId,`Antes: ${old}`);toast("Usuario actualizado.")}else{u.id=Math.max(0,...state.users.map(x=>x.id))+1;state.users.push(u);addAudit("Creó usuario","Usuarios","USR-"+u.id,`Alta de ${u.role}`);toast("Usuario creado.")}closeModals();save();renderAll()}
+function toggleUser(id){if(!canCurrent("Usuarios","delete"))return toast("Este rol no puede desactivar usuarios.");const u=state.users.find(x=>x.id===id);u.status=u.status==="Activo"?"Inactivo":"Activo";addAudit(`${u.status==="Activo"?"Activó":"Desactivó"} usuario`,"Usuarios","USR-"+id,"Cambio de estado con auditoría.");save();renderAll();toast("Estado actualizado.")}
+function openRequestModal(){rRecord.value="";rReason.value="";requestModal.style.display="flex"}
+function createDemoRequest(){state.requests.push({id:Math.max(0,...state.requests.map(r=>r.id))+1,date:now(),requester:"Jonatan",role:"Encargado General",module:"Ventas",record:"VTA-"+String(Math.floor(Math.random()*900+100)).padStart(6,"0"),reason:"Solicitud demo: revisar venta cargada fuera de medio de pago correcto.",status:"Solicitada",approver:"Pendiente"});addAudit("Creó solicitud demo","Ventas","Solicitud demo","Ajuste pendiente de revisión.");save();renderAll();toast("Solicitud demo creada.")}
+function saveRequest(){const requester=rRequester.value.split(" · ")[0];const user=state.users.find(u=>u.name===requester);const req={id:Math.max(0,...state.requests.map(r=>r.id))+1,date:now(),requester,role:user?.role||"-",module:rModule.value,record:rRecord.value.trim()||"Sin ID",reason:rReason.value.trim(),status:"Solicitada",approver:"Pendiente"};if(!req.reason)return toast("El motivo es obligatorio.");state.requests.push(req);addAudit("Solicitó ajuste",req.module,req.record,req.reason);closeModals();save();renderAll();toast("Solicitud enviada.")}
+function resolveRequest(id,status){const r=state.requests.find(x=>x.id===id);if(!canCurrent(r.module,"approve"))return toast("Este rol no puede aprobar solicitudes.");r.status=status;r.approver=state.currentRole;addAudit(status==="Aprobada"?"Aprobó ajuste":"Rechazó ajuste",r.module,r.record,r.reason);if(status==="Aprobada")addAudit("Notificó a Dirección",r.module,r.record,"Ajuste aprobado por Administración/Dirección.");save();renderAll();toast(`Solicitud ${status.toLowerCase()}.`)}
+function openSpecialModal(){const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);sExpires.value=tomorrow.toISOString().slice(0,10);sReason.value="";specialModal.style.display="flex"}
+function saveSpecial(){const reason=sReason.value.trim();if(!reason)return toast("El motivo es obligatorio.");state.specials.push({user:sUser.value.split(" · ")[0],permission:sPermission.value,scope:sScope.value,expires:sExpires.value,grantedBy:state.currentRole,status:"Activo"});addAudit("Otorgó permiso temporal","Permisos especiales",sPermission.value,reason);closeModals();save();renderAll();toast("Permiso temporal creado.")}
+function closeModals(){document.querySelectorAll(".modal-backdrop").forEach(m=>m.style.display="none")}
+function addAudit(action,module,record,reason){state.audit.push({date:now(),user:state.users.find(u=>u.role===state.currentRole)?.name||state.currentRole,role:state.currentRole,action,module,record,reason})}
+function now(){const d=new Date(),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`}
+function toast(msg){toastEl=document.getElementById("toast");toastEl.textContent=msg;toastEl.style.display="block";clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toastEl.style.display="none",2600)}
+function exportCSV(type){let rows,filename;if(type==="users"){rows=state.users;filename="usuarios_roles_permisos.csv"}else if(type==="requests"){rows=state.requests;filename="solicitudes_ajuste.csv"}else if(type==="audit"){rows=state.audit;filename="auditoria.csv"}else{rows=state.partners;filename="aliados_comerciales.csv"}if(!rows.length)return toast("No hay datos para exportar.");const headers=Object.keys(rows[0]);const csv=[headers.join(";")].concat(rows.map(r=>headers.map(h=>`"${String(r[h]??"").replaceAll('"','""')}"`).join(";"))).join("\n");const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);toast("Exportación generada.")}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModals()});load();init();
+</script>
+</body>
+</html>

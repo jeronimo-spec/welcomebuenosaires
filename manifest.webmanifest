@@ -1,0 +1,10 @@
+{
+  "name": "Welcome Buenos Aires - Gestión",
+  "short_name": "Welcome BA",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f8fb",
+  "theme_color": "#0f172a",
+  "lang": "es-AR",
+  "icons": []
+}
